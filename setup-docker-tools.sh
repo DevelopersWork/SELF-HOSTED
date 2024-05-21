@@ -21,7 +21,7 @@ chown -R "$PUID:$PGID" "$VOLUMES_DIR" "$STACKS_DIR" "$LIB_DIR"
 apt-get update && apt-get install docker.io
 # Configure Docker daemon to use the specified storage directory
 # This ensures that Docker images and containers are stored in the desired location
-echo "{ \"graph\": \"$LIB_DIR\" }" > /etc/docker/daemon.json  
+echo "{ \"data-root\": \"$LIB_DIR\" }" > /etc/docker/daemon.json  
 # Restart Docker service to apply the change
 systemctl restart docker
 
