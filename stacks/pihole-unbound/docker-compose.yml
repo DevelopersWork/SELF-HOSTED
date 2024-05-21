@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:2024.05.0
+    hostname: pihole
+    ports:
+      - ${PIHOLE_DNS_PORT:-53}:53/tcp
+      - ${PIHOLE_DNS_PORT:-53}:53/udp
+      - ${PIHOLE_HTTP_WEBPORT:-80}:80/tcp
+      - ${PIHOLE_HTTPS_WEBPORT:-443}:443/tcp
+    environment:
+      - TZ=${TZ:-IST}
+      - WEBPASSWORD=${WEBPASSWORD:-password}
+      - PIHOLE_DNS_=unbound
+      - DNS_BOGUS_PRIV=true
+      - DNS_FQDN_REQUIRED=true
+      - IPv6=false
+      - WEBTHEME=high-contrast-dark
+      - DNSMASQ_LISTENING=all
+    volumes:
+      - ${DOCKER_VOLUMES_DIR}/pihole:/etc/pihole:rw
+      - ${DOCKER_VOLUMES_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+    networks:
+      - dns
+    restart: unless-stopped
+    depends_on:
+      - unbound
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+  unbound:
+    container_name: unbound
+    image: mvance/unbound:1.19.3
+    hostname: unbound
+    ports:
+      - ${UNBOUND_DNS_PORT:-5353}:53/udp
+      - ${UNBOUND_DNS_PORT:-5353}:53/tcp
+    volumes:
+      # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/forward-records.conf
+      - ${DOCKER_VOLUMES_DIR}/unbound/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro
+    networks:
+      - dns
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  dns:
+    driver: bridge
