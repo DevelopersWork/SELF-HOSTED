@@ -26,7 +26,7 @@ services:
       - dns
     restart: unless-stopped
     depends_on:
-      - unbound:
+      - unbound
     deploy:
       resources:
         limits:
@@ -38,9 +38,10 @@ services:
     hostname: unbound
     volumes:
       # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/
-      - ${DOCKER_VOLUMES_DIR}/unbound/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro
-      - ${DOCKER_VOLUMES_DIR}/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
-      - ${DOCKER_VOLUMES_DIR}/unbound/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf
+      - type: bind
+        source: ${DOCKER_VOLUMES_DIR}/unbound
+        target: /opt/unbound/etc/unbound/
+        read_only: false
     networks:
       - dns
     restart: unless-stopped
