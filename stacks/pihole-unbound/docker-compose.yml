@@ -26,8 +26,7 @@ services:
       - dns
     restart: unless-stopped
     depends_on:
-      unbound:
-        condition: service_healthy
+      - unbound:
     deploy:
       resources:
         limits:
