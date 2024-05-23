@@ -26,7 +26,8 @@ services:
       - dns
     restart: unless-stopped
     depends_on:
-      - unbound
+      unbound:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -36,11 +37,8 @@ services:
     container_name: unbound
     image: mvance/unbound:1.19.3
     hostname: unbound
-    ports:
-      - ${UNBOUND_DNS_PORT:-5353}:53/udp
-      - ${UNBOUND_DNS_PORT:-5353}:53/tcp
     volumes:
-      # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/forward-records.conf
+      # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/
       - ${DOCKER_VOLUMES_DIR}/unbound/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro
     networks:
       - dns
