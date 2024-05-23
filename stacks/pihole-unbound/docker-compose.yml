@@ -12,7 +12,7 @@ services:
       - ${PIHOLE_HTTPS_WEBPORT:-443}:443/tcp
     environment:
       - TZ=${TZ:-IST}
-      - WEBPASSWORD=${WEBPASSWORD:-password}
+      - WEBPASSWORD=${WEBPASSWORD}
       - PIHOLE_DNS_=unbound
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
@@ -40,6 +40,8 @@ services:
     volumes:
       # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/
       - ${DOCKER_VOLUMES_DIR}/unbound/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro
+      - ${DOCKER_VOLUMES_DIR}/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
+      - ${DOCKER_VOLUMES_DIR}/unbound/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf
     networks:
       - dns
     restart: unless-stopped
