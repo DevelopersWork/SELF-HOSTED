@@ -1,14 +1,8 @@
 #!/bin/bash
 
-# Ensure script is running as docker
-# if [ "$(id -u)" -ne "$(id -u docker)" ] || [ "$(id -g)" -ne "$(id -g docker)" ]; then
-#     echo "This script must be run as the 'docker' user."
-#     exit 1
-# fi
-
 # Source the utils.sh script to import the function
 # Assuming utils.sh is in the same directory as this script
-source ./utils.sh || { echo "Failed to source utils.sh"; exit 1; } 
+source bash-scripts/utils.sh || { echo "Failed to source utils.sh"; exit 1; } 
 
 # Data and Volumes Configuration
 DOCKER_VOLUME_DIR="/home/docker"

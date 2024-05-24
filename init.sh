@@ -12,9 +12,9 @@ for script in "01-setup-docker.sh" "02-configure-docker.sh" "03-setup-portainer.
 done
 
 # Run scripts 01 and 02 as sudo (or root)
-sudo bash "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
-sudo bash "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
+sudo "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
+sudo "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
 
-# Run scripts 03 and 04 as the docker user
-sudo -u "docker" -g "docker" bash "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
-sudo -u "docker" -g "docker" bash "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
+# Run scripts 03 and 04 as the non-root user
+bash "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
+bash "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
