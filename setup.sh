@@ -15,7 +15,7 @@ for script in "01-setup-docker.sh" "02-configure-docker.sh" "03-setup-portainer.
 done
 
 # Run scripts 01 as sudo (or root)
-sudo /bin/bash -c "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
+sudo /bin/bash "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
 echo "Script 01-setup-docker.sh completed successfully."
 
 # Get the docker user's UID and GID after user creation
@@ -26,11 +26,11 @@ echo "Docker User ID: $DOCKER_USER"
 echo "Docker Group ID: $DOCKER_GROUP"
 
 # Run scripts 02, 03 and 04 as non-root
-sudo -u docker /bin/bash -c "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
+sudo -u docker /bin/bash "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
 echo "Script 02-configure-docker.sh completed successfully."
 
-sudo -u docker /bin/bash -c "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
+sudo -u docker /bin/bash "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
 echo "Script 03-setup-portainer.sh completed successfully."
 
-sudo -u docker /bin/bash -c "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
+sudo -u docker /bin/bash "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
 echo "Script 04-setup-dockge.sh completed successfully."
