@@ -15,6 +15,10 @@ done
 sudo "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
 sudo "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
 
-# Run scripts 03 and 04 as the docker user
-sudo -u docker /bin/bash -c "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
-sudo -u docker /bin/bash -c "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
+# Switch to the docker user for subsequent scripts 
+sudo su - docker <<EOF
+# Run scripts 03 and 04 as the docker user 
+echo "Running as user: $(whoami)"
+"$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
+"$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
+EOF
