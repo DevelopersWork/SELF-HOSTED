@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Ensure script is running as docker
-if [ "$(id -u)" -ne "$(id -u docker)" ] || [ "$(id -g)" -ne "$(id -g docker)" ]; then
-    echo "This script must be run as the 'docker' user."
-    exit 1
-fi
+# if [ "$(id -u)" -ne "$(id -u docker)" ] || [ "$(id -g)" -ne "$(id -g docker)" ]; then
+#     echo "This script must be run as the 'docker' user."
+#     exit 1
+# fi
 
 # Source the utils.sh script to import the function
 # Assuming utils.sh is in the same directory as this script
@@ -26,6 +26,9 @@ stop_containers_with_image_base "portainer/portainer-ce"
 # Create Portainer Volume
 echo "Creating Portainer volume..."
 docker volume create "$PORTAINER_NAME" || { echo "Failed to create Portainer volume."; exit 1; }
+
+PUID=$(id -u docker)
+GUID=$(id -g docker)
 
 # Run Portainer Container
 echo "Running Portainer container..."

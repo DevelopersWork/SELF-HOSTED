@@ -27,6 +27,9 @@ stop_containers_with_image_base "louislam/dockge"
 echo "Creating Dockge volume..."
 docker volume create "$DOCKGE_NAME" || { echo "Failed to create Dockge volume."; exit 1; }
 
+PUID=$(id -u docker)
+GUID=$(id -g docker)
+
 # Run Dockge Container
 echo "Running Dockge container..."
 docker run -d -u "$PUID:$PGID" -p 5001:5001 \
