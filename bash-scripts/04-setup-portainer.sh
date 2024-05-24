@@ -40,12 +40,12 @@ remove_containers_with_image_base "portainer/portainer-ce"
 # Run Portainer Container (with explicit image tag)
 echo "Running Portainer container (version 2.20.3)..."
 docker run -d \
-    -u "$DOCKER_UID:$DOCKER_GID" \
-    -p 9000:9000 \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v "$PORTAINER_VOLUME_PATH:/data" \
-    --name portainer \
-    --restart="unless-stopped" \
-    --cpus="0.2" \
-    --memory="256m" \
-    portainer/portainer-ce:2.20.3 || { echo "Failed to start Portainer container."; exit 1; }
+  -u "$DOCKER_UID:$DOCKER_GID" \
+  -p 9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v "$PORTAINER_VOLUME_PATH:/data" \
+  --name portainer \
+  --restart="unless-stopped" \
+  --cpus="0.2" \
+  --memory="256m" \
+  portainer/portainer-ce:2.20.3 || { echo "Failed to start Portainer container."; exit 1; }

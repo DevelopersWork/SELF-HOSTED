@@ -31,8 +31,10 @@ if ! getent passwd "$DOCKER_USER" &> /dev/null; then
     chown "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_DIR"
 fi
 
-# Ensure the docker user is in the group
+# Ensure the docker user is in the docker group
 if ! id -nG "$DOCKER_USER" | grep -qw "$DOCKER_GROUP"; then
+    echo "Adding $DOCKER_USER to $CURRENT_USER_GROUP..."
+    usermod -aG "$CURRENT_USER_GROUP" "$DOCKER_USER"
     echo "Adding $DOCKER_USER to $DOCKER_GROUP..."
     usermod -aG "$DOCKER_GROUP" "$DOCKER_USER" || { echo "Failed to add user to group."; exit 1; }
 fi

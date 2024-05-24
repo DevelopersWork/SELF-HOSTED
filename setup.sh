@@ -8,6 +8,8 @@ DOCKER_DIR="/home/docker"
 DOCKER_CONTAINER_DIR="$DOCKER_DIR/containers"
 DOCKER_STACKS_DIR="$DOCKER_DIR/stacks"
 DOCKER_STORAGE_DIR="$DOCKER_DIR/storage"
+# Get current user's group name
+CURRENT_USER_GROUP=$(id -gn)
 
 # Create a temporary env file
 ENV_FILE=$(mktemp)
@@ -17,6 +19,7 @@ echo "DOCKER_DIR=$DOCKER_DIR" >> "$ENV_FILE"
 echo "DOCKER_CONTAINER_DIR=$DOCKER_CONTAINER_DIR" >> "$ENV_FILE"
 echo "DOCKER_STACKS_DIR=$DOCKER_STACKS_DIR" >> "$ENV_FILE"
 echo "DOCKER_STORAGE_DIR=$DOCKER_STORAGE_DIR" >> "$ENV_FILE"
+echo "CURRENT_USER_GROUP=$CURRENT_USER_GROUP" >> "$ENV_FILE"
 
 # Array of scripts to run
 scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh")
@@ -40,13 +43,6 @@ echo "DOCKER_GID=$DOCKER_GID" >> "$ENV_FILE"
 echo "Docker User ID: $DOCKER_UID"
 echo "Docker Group ID: $DOCKER_GID"
 
-# Get current user's group name
-CURRENT_USER_GROUP=$(id -gn)
-# Add docker user to the current user's group temporarily
-sudo usermod -aG "$CURRENT_USER_GROUP" "$DOCKER_USER" || {
-  echo "Failed to temporarily add docker user to current user's group." 
-  exit 1
-}
 # Ensure docker user has read access to the env file
 sudo chown "$DOCKER_USER" "$ENV_FILE" || { 
   echo "Failed to grant access to environment file for docker user."
@@ -58,9 +54,6 @@ for script in "${scripts[@]:2}"; do  # Run the remaining scripts as docker user
     sudo -u "$DOCKER_USER" /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
     echo "Script $script completed successfully."
 done
-
-# Remove the 'docker' user from the current user's group
-sudo gpasswd -d "$DOCKER_USER" "$CURRENT_USER_GROUP"
 
 # Remove the temporary file
 rm "$ENV_FILE"
