@@ -15,20 +15,24 @@ fi
 
 # Check if docker group exists and create if needed
 if ! getent group "$DOCKER_GROUP" &> /dev/null; then
-  echo "Creating Docker group..."  # Changed prompt
-  groupadd "$DOCKER_GROUP" || { echo "Failed to create docker group."; exit 1; }
+    echo "Creating Docker group..."
+    groupadd "$DOCKER_GROUP" || { echo "Failed to create docker group."; exit 1; }
 fi
 
 # Check if docker user exists and create if needed
 if ! getent passwd "$DOCKER_USER" &> /dev/null; then
-  echo "Creating Docker user..."  # Changed prompt
-  useradd -M -d "$DOCKER_DIR" -s /usr/sbin/nologin -r -g "$DOCKER_GROUP" "$DOCKER_USER" || {
-    echo "Failed to create docker user."; exit 1; 
-  }
+    echo "Creating Docker user..."
+    useradd -M -d "$DOCKER_DIR" -s /usr/sbin/nologin -r -g "$DOCKER_GROUP" "$DOCKER_USER" || {
+        echo "Failed to create docker user."; exit 1; 
+    }
+
+    # Create the base Docker directory and set permissions
+    mkdir -p "$DOCKER_DIR"
+    chown "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_DIR"
 fi
 
-# Explicitly check if the user is in the group else add
+# Ensure the docker user is in the group
 if ! id -nG "$DOCKER_USER" | grep -qw "$DOCKER_GROUP"; then
-  echo "Adding $DOCKER_USER to $DOCKER_GROUP..."
-  usermod -aG "$DOCKER_GROUP" "$DOCKER_USER" || { echo "Failed to add user to group."; exit 1; }
+    echo "Adding $DOCKER_USER to $DOCKER_GROUP..."
+    usermod -aG "$DOCKER_GROUP" "$DOCKER_USER" || { echo "Failed to add user to group."; exit 1; }
 fi
