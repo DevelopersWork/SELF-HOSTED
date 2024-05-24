@@ -42,13 +42,10 @@ if ! getent passwd docker &> /dev/null; then
   read -r answer
 
   if [[ $answer = [Yy] ]]; then
-    sudo useradd -M -d /home/docker -s /usr/sbin/nologin -r -g docker docker || { echo "Failed to create docker user."; exit 1; }
+    sudo useradd -M -d $DOCKER_DIR -s /usr/sbin/nologin -r -g docker docker || { echo "Failed to create docker user."; exit 1; }
     echo "Docker user created."
   else
     echo "Exiting script without creating docker user."
     exit 1  
   fi
 fi
-
-# adding docker to the current user group as well
-sudo usermod -aG $USER docker

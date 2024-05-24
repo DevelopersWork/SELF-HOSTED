@@ -1,28 +1,28 @@
 #!/bin/bash
 
-# Ensure script is running as root (or with sudo)
-if [ "$(id -u)" -ne 0 ]; then
-  echo "This script requires root privileges. Please run with sudo."
+# Ensure script is running as the 'docker' user
+if [ "$(id -u)" -ne "$DOCKER_USER" ] || [ "$(id -g)" -ne "$DOCKER_GROUP" ]; then
+  echo "This script must be run as the 'docker' user."
   exit 1
 fi
 
-# Get the docker user's UID and GID after user creation
-DOCKER_USER=$(getent passwd docker | cut -d: -f3) # User ID of the "docker" user
-DOCKER_GROUP=$(getent group docker | cut -d: -f3) # Group ID of the "docker" group
+if [ ! -d "$DOCKER_CONTAINER_DIR" ]; then
+  mkdir -p "$DOCKER_CONTAINER_DIR"
+fi
+if ! [ "$(stat -c %u "$DOCKER_CONTAINER_DIR")" = "$DOCKER_USER" ] || ! [ "$(stat -c %g "$DOCKER_CONTAINER_DIR")" = "$DOCKER_GROUP" ]; then
+  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_CONTAINER_DIR"
+fi
 
-echo "Docker User ID: $DOCKER_USER"
-echo "Docker Group ID: $DOCKER_GROUP"
+if [ ! -d "$DOCKER_STACKS_DIR" ]; then
+  mkdir -p "$DOCKER_STACKS_DIR"
+fi
+if ! [ "$(stat -c %u "$DOCKER_STACKS_DIR")" = "$DOCKER_USER" ] || ! [ "$(stat -c %g "$DOCKER_STACKS_DIR")" = "$DOCKER_GROUP" ]; then
+  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_STACKS_DIR"
+fi
 
-# Data and Volumes Configuration
-DOCKER_DIR="/home/docker"
-
-# Check if directory exists and has correct ownership
-if [ ! -d "$DOCKER_VOLUME_DIR" ] || ! [ "$(stat -c %u "$DOCKER_VOLUME_DIR")" = "$DOCKER_USER" ] || ! [ "$(stat -c %g "$DOCKER_VOLUME_DIR")" = "$DOCKER_GROUP" ]; then
-  echo "Creating/updating directory and permissions..."
-
-  # Create directory if it doesn't exist
-  mkdir -p "$DOCKER_DIR" "$DOCKER_DIR/volumes" "$DOCKER_DIR/stacks"
-
-  # Set directory permissions 
-  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_DIR"
+if [ ! -d "$DOCKER_STORAGE_DIR" ]; then
+  mkdir -p "$DOCKER_STORAGE_DIR"
+fi
+if ! [ "$(stat -c %u "$DOCKER_STORAGE_DIR")" = "$DOCKER_USER" ] || ! [ "$(stat -c %g "$DOCKER_STORAGE_DIR")" = "$DOCKER_GROUP" ]; then
+  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_STORAGE_DIR"
 fi

@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# Get docker user and group information (ensuring they exist)
-PUID=$(getent passwd docker | cut -d: -f3) || { echo "Docker user not found."; exit 1; }
-PGID=$(getent group docker | cut -d: -f3) || { echo "Docker group not found."; exit 1; }
-
 # Ensure script is running as the 'docker' user
-if [ "$(id -u)" -ne "$PUID" ] || [ "$(id -g)" -ne "$PGID" ]; then
+if [ "$(id -u)" -ne "$DOCKER_USER" ] || [ "$(id -g)" -ne "$DOCKER_GROUP" ]; then
   echo "This script must be run as the 'docker' user."
   exit 1
 fi
@@ -27,18 +23,18 @@ echo "Checking for existing Portainer containers..."
 remove_containers_with_image_base "portainer/portainer-ce"
 
 # Data and Volumes Configuration
-PORTAINER_VOLUME_PATH="/home/docker/volumes/portainer"
+PORTAINER_VOLUME_PATH="$DOCKER_CONTAINER_DIR/portainer"
 
 # Create the Portainer volume directory
 echo "Creating Portainer volume directory..."
 mkdir -p "$PORTAINER_VOLUME_PATH" || { echo "Failed to create Portainer volume directory."; exit 1; }
 
 # Set permissions on the Portainer volume directory
-chown -R "$PUID:$PGID" "$PORTAINER_VOLUME_PATH" 
+chown -R "$DOCKER_USER:$DOCKER_GROUP" "$PORTAINER_VOLUME_PATH" 
 
 # Run Portainer Container
 echo "Running Portainer container..."
-docker run -d -u "$PUID:$PGID" -p 9000:9000 \
+docker run -d -u "$DOCKER_USER:$DOCKER_GROUP" -p 9000:9000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
   -v "$PORTAINER_VOLUME_PATH:/data" \
