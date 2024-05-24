@@ -10,20 +10,21 @@ if [ "$(id -u)" -ne "$PUID" ] || [ "$(id -g)" -ne "$PGID" ]; then
   exit 1
 fi
 
-# Function to stop containers with a specific image base (ignoring tag)
-function stop_containers_with_image_base() {
+# Function to remove containers with a specific image base (ignoring tag)
+function remove_containers_with_image_base() {
   local image_base=$1
   container_ids=$(docker ps --no-trunc | grep "$image_base" | awk '{ print $1 }')
 
   if [ -n "$container_ids" ]; then
     echo "Stopping existing containers with image base: $image_base"
     docker stop $container_ids
+    docker rm $container_ids
   fi
 }
 
-# Stop existing Portainer containers
+# Remove existing Portainer containers
 echo "Checking for existing Portainer containers..."
-stop_containers_with_image_base "portainer/portainer-ce"
+remove_containers_with_image_base "portainer/portainer-ce"
 
 # Data and Volumes Configuration
 PORTAINER_VOLUME_PATH="/home/docker/volumes/portainer"
