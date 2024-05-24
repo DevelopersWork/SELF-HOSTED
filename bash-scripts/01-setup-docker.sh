@@ -43,7 +43,6 @@ if ! getent passwd docker &> /dev/null; then
 
   if [[ $answer = [Yy] ]]; then
     sudo useradd -M -d /nonexistent -s /usr/sbin/nologin -r -g docker docker || { echo "Failed to create docker user."; exit 1; }
-    sudo usermod -aG docker docker 
     echo "Docker user created."
   else
     echo "Exiting script without creating docker user."
