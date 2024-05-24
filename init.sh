@@ -21,7 +21,6 @@ echo "Script 02-configure-docker.sh completed successfully."
 # Get current user's username and add to docker group
 CURRENT_USER=$(whoami)
 sudo usermod -aG docker $CURRENT_USER
-newgrp docker
 
 # Run scripts 03 and 04 as non-root
 /bin/bash -c "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
@@ -32,4 +31,3 @@ echo "Script 04-setup-dockge.sh completed successfully."
 
 # Remove the current user from the docker group and refresh groups
 sudo gpasswd -d $CURRENT_USER docker
-newgrp $CURRENT_USER
