@@ -14,15 +14,15 @@ echo "Docker User ID: $DOCKER_USER"
 echo "Docker Group ID: $DOCKER_GROUP"
 
 # Data and Volumes Configuration
-DOCKER_VOLUME_DIR="/home/docker"
+DOCKER_DIR="/home/docker"
 
 # Check if directory exists and has correct ownership
 if [ ! -d "$DOCKER_VOLUME_DIR" ] || ! [ "$(stat -c %u "$DOCKER_VOLUME_DIR")" = "$DOCKER_USER" ] || ! [ "$(stat -c %g "$DOCKER_VOLUME_DIR")" = "$DOCKER_GROUP" ]; then
   echo "Creating/updating directory and permissions..."
 
   # Create directory if it doesn't exist
-  mkdir -p "$DOCKER_VOLUME_DIR"
+  mkdir -p "$DOCKER_DIR" "$DOCKER_DIR/volumes" "$DOCKER_DIR/stacks"
 
   # Set directory permissions 
-  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_VOLUME_DIR"
+  chown -R "$DOCKER_USER:$DOCKER_GROUP" "$DOCKER_DIR"
 fi

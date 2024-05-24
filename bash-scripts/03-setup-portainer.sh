@@ -5,8 +5,8 @@ PUID=$(getent passwd docker | cut -d: -f3) || { echo "Docker user not found."; e
 PGID=$(getent group docker | cut -d: -f3) || { echo "Docker group not found."; exit 1; }
 
 # Ensure script is running as docker, exit if not 
-if [ "$(id -g)" -ne "$PGID" ]; then
-  echo "This script must be run as the 'docker' group."
+if [ "$(id -u)" -ne "$PUID" ] || [ "$(id -g)" -ne "$PGID" ]; then
+  echo "This script must be run as the 'docker' user and group."
   exit 1
 fi
 
@@ -21,25 +21,20 @@ function stop_containers_with_image_base() {
   fi
 }
 
-# Data and Volumes Configuration
-DOCKER_DIR="/home/docker"
-
-# Get current timestamp
-timestamp=$(date +%s)
-
-# Define volume name with timestamps
-PORTAINER_VOLUME="portainer-$timestamp"
-
 # Stop existing Portainer containers
 echo "Checking for existing Portainer containers..."
 stop_containers_with_image_base "portainer/portainer-ce"
+
+# Volumes Configuration
+PORTAINER_VOLUME_DIR="/home/docker/volumes/portainer"
+mkdir -p $PORTAINER_VOLUME_DIR
 
 # Run Portainer Container
 echo "Running Portainer container..."
 docker run -d -u "$PUID:$PGID" -p 9000:9000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
-  -v "$DOCKER_DIR/volumes/portainer:/data/:rw" \
+  -v "$PORTAINER_VOLUME_DIR:/data/:rw" \
   --name "portainer" \
   --restart=always \
   --cpus="0.2" \
