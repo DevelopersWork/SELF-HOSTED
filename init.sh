@@ -6,6 +6,8 @@ for script in "01-setup-docker.sh" "02-configure-docker.sh" "03-setup-portainer.
   if [ ! -f "$SCRIPTS_DIR/$script" ]; then
     echo "Error: Script $script not found in $SCRIPTS_DIR"
     exit 1
+  else 
+    chmod +x "$SCRIPTS_DIR/$script"
   fi
 done
 
