@@ -41,8 +41,8 @@ docker run -d -u "$PUID:$PGID" -p 9000:9000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
   -v "$PORTAINER_VOLUME_PATH:/data" \
-  --name portainer \  # Use a static name for easier management
-  --restart=always \
+  --name portainer \
+  --restart="unless-stopped" \
   --cpus="0.2" \
   --memory="256m" \
   portainer/portainer-ce:2.20.2 || { echo "Failed to start Portainer container."; exit 1; }
