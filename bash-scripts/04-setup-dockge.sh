@@ -4,9 +4,9 @@
 PUID=$(getent passwd docker | cut -d: -f3) || { echo "Docker user not found."; exit 1; }
 PGID=$(getent group docker | cut -d: -f3) || { echo "Docker group not found."; exit 1; }
 
-# Ensure script is running as docker, exit if not 
+# Ensure script is running as the 'docker' user
 if [ "$(id -u)" -ne "$PUID" ] || [ "$(id -g)" -ne "$PGID" ]; then
-  echo "This script must be run as the 'docker' user and group."
+  echo "This script must be run as the 'docker' user."
   exit 1
 fi
 
@@ -25,10 +25,15 @@ function stop_containers_with_image_base() {
 echo "Checking for existing Dockge containers..."
 stop_containers_with_image_base "louislam/dockge"
 
-# Volumes Configuration
-DOCKGE_VOLUME_DIR="/home/docker/volumes/dockge"
-STACKS_DIR="/home/docker/stacks"
-mkdir -p $DOCKGE_VOLUME_DIR
+# Data and Volumes Configuration
+DOCKGE_VOLUME_PATH="/home/docker/volumes/dockge"
+
+# Create the Dockge volume directory
+echo "Creating Dockge volume directory..."
+mkdir -p "$DOCKGE_VOLUME_PATH" || { echo "Failed to create Dockge volume directory."; exit 1; }
+
+# Set permissions on the Dockge volume directory
+chown -R "$PUID:$PGID" "$DOCKGE_VOLUME_PATH" 
 
 # Run Dockge Container
 echo "Running Dockge container..."
@@ -36,8 +41,8 @@ docker run -d -u "$PUID:$PGID" -p 5001:5001 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
   -v "$STACKS_DIR:/opt/stacks/:rw" \
-  -v "$DOCKGE_VOLUME_DIR:/app/data/:rw" \
-  --name "dockge" \
+  -v "$DOCKGE_VOLUME_PATH:/app/data/:rw" \
+  --name dockge \
   --restart="unless-stopped" \
   --cpus="0.2" \
   --memory="256m" \
