@@ -40,11 +40,22 @@ echo "DOCKER_GID=$DOCKER_GID" >> "$ENV_FILE"
 echo "Docker User ID: $DOCKER_UID"
 echo "Docker Group ID: $DOCKER_GID"
 
+# Get current user's group name
+CURRENT_USER_GROUP=$(id -gn)
+# Add docker user to the current user's group temporarily
+sudo usermod -aG "$CURRENT_USER_GROUP" "$DOCKER_USER" || {
+  echo "Failed to temporarily add docker user to current user's group." 
+  exit 1
+}
+
 # Run scripts 03, 04, and 05 as the 'docker' user
 for script in "${scripts[@]:2}"; do  # Run the remaining scripts as docker user
     sudo -u "$DOCKER_USER" /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
     echo "Script $script completed successfully."
 done
+
+# Remove the 'docker' user from the current user's group
+sudo gpasswd -d "$DOCKER_USER" "$CURRENT_USER_GROUP"
 
 # Remove the temporary file
 rm "$ENV_FILE"
