@@ -17,8 +17,8 @@ function remove_containers_with_image_base() {
 
   if [ -n "$container_ids" ]; then
     echo "Stopping existing containers with image base: $image_base"
-    docker stop $container_ids
-    docker rm $container_ids
+    docker container stop $container_ids
+    docker container rm $container_ids
   fi
 } 
 
