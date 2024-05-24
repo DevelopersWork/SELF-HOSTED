@@ -2,7 +2,7 @@
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")/bash-scripts"  # Get the absolute path of the script's directory
 
 # Check if the scripts exist
-for script in "01-setup-docker.sh" "02-configure-docker.sh" "03-setup-portainer.sh" "04-setup-dockge.sh" "utils.sh"; do
+for script in "01-setup-docker.sh" "02-configure-docker.sh" "03-setup-portainer.sh" "04-setup-dockge.sh"; do
   if [ ! -f "$SCRIPTS_DIR/$script" ]; then
     echo "Error: Script $script not found in $SCRIPTS_DIR"
     exit 1
