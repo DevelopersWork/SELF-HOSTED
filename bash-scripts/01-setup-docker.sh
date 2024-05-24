@@ -49,3 +49,6 @@ if ! getent passwd docker &> /dev/null; then
     exit 1  
   fi
 fi
+
+# adding docker to the current user group as well
+sudo usermod -aG $USER docker

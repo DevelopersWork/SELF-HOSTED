@@ -10,9 +10,16 @@ if [ "$(id -g)" -ne "$PGID" ]; then
   exit 1
 fi
 
-# Source the utils.sh script to import the function
-# Assuming utils.sh is in the bash-scripts directory relative to this script
-source ./bash-scripts/utils.sh || { echo "Failed to source utils.sh"; exit 1; } 
+# Function to stop containers with a specific image base (ignoring tag)
+function stop_containers_with_image_base() {
+  local image_base=$1
+  container_ids=$(docker ps --no-trunc | grep "$image_base" | awk '{ print $1 }')
+
+  if [ -n "$container_ids" ]; then
+    echo "Stopping existing containers with image base: $image_base"
+    docker stop $container_ids
+  fi
+}
 
 # Data and Volumes Configuration
 DOCKER_VOLUME_DIR="/home/docker"
