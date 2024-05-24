@@ -13,7 +13,10 @@ done
 
 # Run scripts 01 and 02 as sudo (or root)
 sudo /bin/bash -c "$SCRIPTS_DIR/01-setup-docker.sh" || { echo "Error running 01-setup-docker.sh"; exit 1; }
+echo "Script 01-setup-docker.sh completed successfully."
+
 sudo /bin/bash -c "$SCRIPTS_DIR/02-configure-docker.sh" || { echo "Error running 02-configure-docker.sh"; exit 1; }
+echo "Script 02-configure-docker.sh completed successfully."
 
 # Get current user's username and add to docker group
 CURRENT_USER=$(whoami)
@@ -22,8 +25,11 @@ newgrp docker
 
 # Run scripts 03 and 04 as non-root
 /bin/bash -c "$SCRIPTS_DIR/03-setup-portainer.sh" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
+echo "Script 03-setup-portainer.sh completed successfully."
+
 /bin/bash -c "$SCRIPTS_DIR/04-setup-dockge.sh" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
+echo "Script 04-setup-dockge.sh completed successfully."
 
 # Remove the current user from the docker group and refresh groups
 sudo gpasswd -d $CURRENT_USER docker
-newgrp docker 
+newgrp $CURRENT_USER
