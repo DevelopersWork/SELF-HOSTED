@@ -41,7 +41,7 @@ echo "Running Dockge container..."
 docker run -d -u "$PUID:$PGID" -p 5001:5001 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
-  -v "$STACKS_DIR:/opt/stacks/:rw" \
+  -v "/home/docker/stacks:/opt/stacks/:rw" \
   -v "$DOCKGE_VOLUME_PATH:/app/data/:rw" \
   --name dockge \
   --restart="unless-stopped" \
