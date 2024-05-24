@@ -1,9 +1,9 @@
 #!/bin/bash
 
+# Constants (for clarity and maintainability)
 DOCKER_USER="docker"
 DOCKER_GROUP="docker"
-
-SCRIPTS_DIR="$(dirname "$(realpath "$0")")/bash-scripts"  # Get the absolute path of the script's directory
+SCRIPTS_DIR="$(dirname "$(realpath "$0")")/bash-scripts"
 DOCKER_DIR="/home/docker"
 DOCKER_CONTAINER_DIR="$DOCKER_DIR/containers"
 DOCKER_STACKS_DIR="$DOCKER_DIR/stacks"
@@ -18,41 +18,33 @@ echo "DOCKER_CONTAINER_DIR=$DOCKER_CONTAINER_DIR" >> "$ENV_FILE"
 echo "DOCKER_STACKS_DIR=$DOCKER_STACKS_DIR" >> "$ENV_FILE"
 echo "DOCKER_STORAGE_DIR=$DOCKER_STORAGE_DIR" >> "$ENV_FILE"
 
-# Check if the scripts exist
-for script in "01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh"; do
-  if [ ! -f "$SCRIPTS_DIR/$script" ]; then
-    echo "Error: Script $script not found in $SCRIPTS_DIR"
-    exit 1
-  fi
+# Array of scripts to run
+scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh")
+
+# Check if scripts exist
+for script in "${scripts[@]}"; do
+    [ -f "$SCRIPTS_DIR/$script" ] || { echo "Error: Script $script not found in $SCRIPTS_DIR"; exit 1; }
 done
 
-# Run scripts 01 as sudo (or root)
-sudo /bin/bash "$SCRIPTS_DIR/01-dependencies.sh" "$ENV_FILE" || { echo "Error running 01-dependencies.sh"; exit 1; }
-echo "Script 01-dependencies.sh completed successfully."
-
-# Run scripts 02 as sudo (or root)
-sudo /bin/bash "$SCRIPTS_DIR/02-user-setup.sh" "$ENV_FILE" || { echo "Error running 02-user-setup.sh"; exit 1; }
-echo "Script 02-user-setup.sh completed successfully."
+# Run scripts 01 and 02 as root
+for script in "${scripts[@]:0:2}"; do  # Run the first two scripts as root
+    sudo /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
+    echo "Script $script completed successfully."
+done
 
 # Get the docker user's UID and GID after user creation
-DOCKER_UID=$(getent passwd $DOCKER_USER | cut -d: -f3) # User ID of the "docker" user
-DOCKER_GID=$(getent group $DOCKER_GROUP | cut -d: -f3) # Group ID of the "docker" group
-
+DOCKER_UID=$(id -u "$DOCKER_USER")
+DOCKER_GID=$(id -g "$DOCKER_USER")
 echo "DOCKER_UID=$DOCKER_UID" >> "$ENV_FILE"
 echo "DOCKER_GID=$DOCKER_GID" >> "$ENV_FILE"
+echo "Docker User ID: $DOCKER_UID"
+echo "Docker Group ID: $DOCKER_GID"
 
-echo "Docker User ID: $DOCKER_USER"
-echo "Docker Group ID: $DOCKER_GROUP"
-
-# Run scripts 03, 04 and 05 as non-root
-sudo -u docker /bin/bash "$SCRIPTS_DIR/02-user-setup.sh" "$ENV_FILE" || { echo "Error running 02-user-setup.sh"; exit 1; }
-echo "Script 02-user-setup.sh completed successfully."
-
-sudo -u docker /bin/bash "$SCRIPTS_DIR/03-setup-portainer.sh" "$ENV_FILE" || { echo "Error running 03-setup-portainer.sh"; exit 1; }
-echo "Script 03-setup-portainer.sh completed successfully."
-
-sudo -u docker /bin/bash "$SCRIPTS_DIR/04-setup-dockge.sh" "$ENV_FILE" || { echo "Error running 04-setup-dockge.sh"; exit 1; }
-echo "Script 04-setup-dockge.sh completed successfully."
+# Run scripts 03, 04, and 05 as the 'docker' user
+for script in "${scripts[@]:2}"; do  # Run the remaining scripts as docker user
+    sudo -u "$DOCKER_USER" /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
+    echo "Script $script completed successfully."
+done
 
 # Remove the temporary file
 rm "$ENV_FILE"
