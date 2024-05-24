@@ -50,9 +50,6 @@ if ! getent passwd docker &> /dev/null; then
   fi
 fi
 
-# Give the docker user and group sudo permissions
-echo "Adding docker user and group to sudoers..."
-sudo usermod -aG sudo docker            # Add docker user to sudo group
-sudo chmod g+w /etc/sudoers             # Make sudoers file group-writable
-sudo groupmod -g "$(id -g docker)" sudo # Change group ownership of the sudoers file
-sudo chmod g-w /etc/sudoers             # Revoke group-writable permissions on sudoers file
+# Add current user to the docker group ONLY if the docker user was just created
+sudo usermod -aG docker $USER 
+newgrp docker
