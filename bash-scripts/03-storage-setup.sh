@@ -7,10 +7,10 @@ ENV_FILE="$1"
 # Source the environment file to load variables
 source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 
-# Ensure script is running as the 'docker' user
-if [ "$(id -u)" -ne "$DOCKER_UID" ] || [ "$(id -g)" -ne "$DOCKER_GID" ]; then
-    echo "This script must be run as the 'docker' user."
-    exit 1
+# Ensure script is running as root (or with sudo)
+if [ "$(id -u)" -ne 0 ]; then
+  echo "This script requires root privileges. Please run with sudo."
+  exit 1
 fi
 
 # Function to create and set permissions on a directory
@@ -31,3 +31,4 @@ create_docker_dir() {
 create_docker_dir "$DOCKER_CONTAINER_DIR"
 create_docker_dir "$DOCKER_STACKS_DIR"
 create_docker_dir "$DOCKER_STORAGE_DIR"
+create_docker_dir "$DOCKER_TEMP_DIR"

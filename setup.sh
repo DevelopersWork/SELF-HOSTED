@@ -8,8 +8,7 @@ DOCKER_DIR="/home/docker"
 DOCKER_CONTAINER_DIR="$DOCKER_DIR/containers"
 DOCKER_STACKS_DIR="$DOCKER_DIR/stacks"
 DOCKER_STORAGE_DIR="$DOCKER_DIR/storage"
-# Get current user's group name
-CURRENT_USER_GROUP=$(id -gn)
+DOCKER_TEMP_DIR="$DOCKER_DIR/temp"
 
 # Create a temporary env file
 ENV_FILE=$(mktemp)
@@ -19,20 +18,20 @@ echo "DOCKER_DIR=$DOCKER_DIR" >> "$ENV_FILE"
 echo "DOCKER_CONTAINER_DIR=$DOCKER_CONTAINER_DIR" >> "$ENV_FILE"
 echo "DOCKER_STACKS_DIR=$DOCKER_STACKS_DIR" >> "$ENV_FILE"
 echo "DOCKER_STORAGE_DIR=$DOCKER_STORAGE_DIR" >> "$ENV_FILE"
-echo "CURRENT_USER_GROUP=$CURRENT_USER_GROUP" >> "$ENV_FILE"
+echo "DOCKER_TEMP_DIR=$DOCKER_TEMP_DIR" >> "$ENV_FILE"
 
 # Array of scripts to run
 scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh")
 
 # Check if scripts exist
 for script in "${scripts[@]}"; do
-    [ -f "$SCRIPTS_DIR/$script" ] || { echo "Error: Script $script not found in $SCRIPTS_DIR"; exit 1; }
+  [ -f "$SCRIPTS_DIR/$script" ] || { echo "Error: Script $script not found in $SCRIPTS_DIR"; exit 1; }
 done
 
-# Run scripts 01 and 02 as root
-for script in "${scripts[@]:0:2}"; do  # Run the first two scripts as root
-    sudo /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
-    echo "Script $script completed successfully."
+# Run scripts 01, 02, and 03 as root
+for script in "${scripts[@]:0:3}"; do  # Run the first two scripts as root
+  sudo /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
+  echo "Script $script completed successfully."
 done
 
 # Get the docker user's UID and GID after user creation
@@ -49,9 +48,15 @@ sudo chown "$DOCKER_USER" "$ENV_FILE" || {
   exit 1
 }
 
-# Run scripts 03, 04, and 05 as the 'docker' user
-for script in "${scripts[@]:2}"; do  # Run the remaining scripts as docker user
-    sudo -u "$DOCKER_USER" /bin/bash "$SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
+# Create a temporary directory for the scripts under the docker user's home
+DOCKER_SCRIPTS_DIR="$DOCKER_TEMP_DIR/bash-scripts"
+sudo mkdir -p "$DOCKER_SCRIPTS_DIR"
+sudo cp "$SCRIPTS_DIR/*" "$DOCKER_SCRIPTS_DIR/"
+sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_SCRIPTS_DIR"
+
+# Run scripts 04 and 05 as the 'docker' user
+for script in "${scripts[@]:3}"; do  # Run the remaining scripts as docker user
+    sudo -u "$DOCKER_USER" /bin/bash "$DOKCER_SCRIPTS_DIR/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
     echo "Script $script completed successfully."
 done
 
