@@ -34,17 +34,13 @@ DOCKGE_VOLUME="dockge-$timestamp"
 echo "Checking for existing Dockge containers..."
 stop_containers_with_image_base "louislam/dockge"
 
-# Create Dockge Volume
-echo "Creating Dockge volume..."
-docker volume create "$DOCKGE_VOLUME" || { echo "Failed to create Dockge volume."; exit 1; }
-
 # Run Dockge Container
 echo "Running Dockge container..."
 docker run -d -u "$PUID:$PGID" -p 5001:5001 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
-  -v "$DOCKER_DIR/stacks:/opt/stacks/" \
-  -v "$DOCKGE_VOLUME:/app/data" \
+  -v "$DOCKER_DIR/stacks:/opt/stacks/:rw" \
+  -v "$DOCKER_DIR/volumes/dockge:/app/data/:rw" \
   --name "dockge" \
   --restart="unless-stopped" \
   --cpus="0.2" \

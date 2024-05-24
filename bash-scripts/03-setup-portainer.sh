@@ -21,6 +21,9 @@ function stop_containers_with_image_base() {
   fi
 }
 
+# Data and Volumes Configuration
+DOCKER_DIR="/home/docker"
+
 # Get current timestamp
 timestamp=$(date +%s)
 
@@ -31,16 +34,12 @@ PORTAINER_VOLUME="portainer-$timestamp"
 echo "Checking for existing Portainer containers..."
 stop_containers_with_image_base "portainer/portainer-ce"
 
-# Create Portainer Volume
-echo "Creating Portainer volume..."
-docker volume create "$PORTAINER_VOLUME" || { echo "Failed to create Portainer volume."; exit 1; }
-
 # Run Portainer Container
 echo "Running Portainer container..."
 docker run -d -u "$PUID:$PGID" -p 9000:9000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "/etc/timezone:/etc/timezone:ro" \
-  -v "$PORTAINER_VOLUME:/data" \
+  -v "$DOCKER_DIR/volumes/portainer:/data/:rw" \
   --name "portainer" \
   --restart=always \
   --cpus="0.2" \
