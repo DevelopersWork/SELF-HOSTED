@@ -5,8 +5,8 @@ PUID=$(getent passwd docker | cut -d: -f3) || { echo "Docker user not found."; e
 PGID=$(getent group docker | cut -d: -f3) || { echo "Docker group not found."; exit 1; }
 
 # Ensure script is running as docker, exit if not 
-if [ "$(id -u)" -ne "$PUID" ] || [ "$(id -g)" -ne "$PGID" ]; then
-  echo "This script must be run as the 'docker' user."
+if [ "$(id -g)" -ne "$PGID" ]; then
+  echo "This script must be run as the 'docker' group."
   exit 1
 fi
 
