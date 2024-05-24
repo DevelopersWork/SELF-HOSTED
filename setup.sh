@@ -47,6 +47,11 @@ sudo usermod -aG "$CURRENT_USER_GROUP" "$DOCKER_USER" || {
   echo "Failed to temporarily add docker user to current user's group." 
   exit 1
 }
+# Ensure docker user has read access to the env file
+chown "$DOCKER_USER" "$ENV_FILE" || { 
+    echo "Failed to grant access to environment file for docker user."
+    exit 1
+}
 
 # Run scripts 03, 04, and 05 as the 'docker' user
 for script in "${scripts[@]:2}"; do  # Run the remaining scripts as docker user
