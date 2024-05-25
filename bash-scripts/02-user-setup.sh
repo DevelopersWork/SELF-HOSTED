@@ -9,8 +9,8 @@ source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 
 # Ensure script is running as root (or with sudo)
 if [ "$(id -u)" -ne 0 ]; then
-  echo "This script requires root privileges. Please run with sudo."
-  exit 1
+    echo "This script requires root privileges. Please run with sudo."
+    exit 1
 fi
 
 # Check if docker group exists and create if needed
@@ -22,13 +22,13 @@ fi
 # Check if docker user exists and create if needed
 if ! getent passwd "$DOCKER_USER" &> /dev/null; then
     echo "Creating Docker user..."
-    useradd -M -d "$DOCKER_DIR" -s /usr/sbin/nologin -r -g "$DOCKER_GROUP" "$DOCKER_USER" || {
+    useradd -M -d "$DOCKER_PATH" -s /usr/sbin/nologin -r -g "$DOCKER_GROUP" "$DOCKER_USER" || {
         echo "Failed to create docker user."; exit 1; 
     }
 
     # Create the base Docker directory and set permissions
-    mkdir -p "$DOCKER_DIR"
-    chown "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_DIR"
+    mkdir -p "$DOCKER_PATH"
+    chown "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_PATH"
 fi
 
 # Ensure the docker user is in the docker group

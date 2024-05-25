@@ -25,7 +25,7 @@ remove_containers_with_image_base() {
 }
 
 # Data and Volumes Configuration
-DOCKGE_VOLUME_PATH="$DOCKER_CONTAINER_DIR/dockge"
+DOCKGE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/dockge"
 
 # Create the Dockge volume directory
 echo "Creating Dockge volume directory at $DOCKGE_VOLUME_PATH..."
@@ -43,7 +43,7 @@ docker run -d \
     -u "$DOCKER_UID:$DOCKER_GID" \
     -p 5001:5001 \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v "$DOCKER_STACKS_DIR:/opt/stacks/:rw" \
+    -v "$DOCKER_STACKS_PATH:/opt/stacks/:rw" \
     -v "$DOCKGE_VOLUME_PATH:/app/data/:rw" \
     --name dockge \
     --restart="unless-stopped" \
