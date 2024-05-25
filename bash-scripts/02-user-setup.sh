@@ -36,3 +36,6 @@ if ! id -nG "$DOCKER_USER" | grep -qw "$DOCKER_GROUP"; then
     echo "Adding $DOCKER_USER to $DOCKER_GROUP..."
     usermod -aG "$DOCKER_GROUP" "$DOCKER_USER" || { echo "Failed to add user to group."; exit 1; }
 fi
+
+echo "Docker User ID: $DOCKER_PUID"
+echo "Docker Group ID: $DOCKER_GUID"
