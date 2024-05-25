@@ -31,4 +31,3 @@ create_docker_dir() {
 create_docker_dir "$DOCKER_CONTAINER_PATH"
 create_docker_dir "$DOCKER_STACKS_PATH"
 create_docker_dir "$DOCKER_STORAGE_PATH"
-create_docker_dir "$DOCKER_TEMP_PATH"

@@ -8,7 +8,10 @@ ENV_FILE="$1"
 source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 
 # Ensure script is running as the 'docker' user
-if [ "$(id -u)" -ne "$DOCKER_UID" ] || [ "$(id -g)" -ne "$DOCKER_GID" ]; then
+if [ -z "$DOCKER_PUID" ] || [ -z "$DOCKER_GUID" ]; then
+    echo "ERROR: DOCKER_PUID or DOCKER_GUID is not set. Please check your environment variables."
+    exit 1
+elif [ "$(id -u)" -ne "$DOCKER_PUID" ] || [ "$(id -g)" -ne "$DOCKER_GUID" ]; then
     echo "This script must be run as the 'docker' user."
     exit 1
 fi
@@ -32,7 +35,7 @@ echo "Creating Dockge volume directory at $DOCKGE_VOLUME_PATH..."
 mkdir -p "$DOCKGE_VOLUME_PATH" || { echo "Failed to create Dockge volume directory."; exit 1; }
 
 # Set permissions on the Dockge volume directory
-chown -R "$DOCKER_UID:$DOCKER_GID" "$DOCKGE_VOLUME_PATH" 
+chown -R "$DOCKER_PUID:$DOCKER_GUID" "$DOCKGE_VOLUME_PATH" 
 
 # Remove existing Dockge containers (using the improved function)
 remove_containers_with_image_base "louislam/dockge"
@@ -40,7 +43,7 @@ remove_containers_with_image_base "louislam/dockge"
 # Run Dockge Container (with explicit image tag)
 echo "Running Dockge container (version 1.4.2)..."
 docker run -d \
-    -u "$DOCKER_UID:$DOCKER_GID" \
+    -u "$DOCKER_PUID:$DOCKER_GUID" \
     -p 5001:5001 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "$DOCKER_STACKS_PATH:/opt/stacks/:rw" \
