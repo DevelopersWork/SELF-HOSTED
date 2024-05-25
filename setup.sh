@@ -23,6 +23,12 @@ for script in "${scripts[@]:0:3}"; do  # Run the first three scripts as root
   echo "Script $script completed successfully."
 done
 
+# Get the docker user's UID and GID after user creation
+DOCKER_PUID=$(id -u "$DOCKER_USER")
+DOCKER_GUID=$(id -g "$DOCKER_USER")
+echo "Docker User ID: $DOCKER_PUID"
+echo "Docker Group ID: $DOCKER_GUID"
+
 # Create alias for running commands as the docker user
 AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
 

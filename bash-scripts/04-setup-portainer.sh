@@ -7,6 +7,10 @@ ENV_FILE="$1"
 # Source the environment file to load variables
 source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 
+# Get the docker user's UID and GID
+DOCKER_PUID=$(id -u "$DOCKER_USER")
+DOCKER_GUID=$(id -g "$DOCKER_USER")
+
 # Ensure script is running as the 'docker' user
 if [ -z "$DOCKER_PUID" ] || [ -z "$DOCKER_GUID" ]; then
     echo "ERROR: DOCKER_PUID or DOCKER_GUID is not set. Please check your environment variables."
