@@ -1,15 +1,19 @@
 #!/bin/bash
 
+# Get the environment file path and exit if not provided or not a regular file
+ENV_FILE="./.env"
+[ -f "$ENV_FILE" ] || { echo "Usage: $0 <environment_file>"; exit 1; }
+
+# Source the environment file to load variables
+source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
+
 # Constants (for clarity and maintainability)
-DOCKER_USER="docker"
-DOCKER_GROUP="docker"
-SCRIPTS_DIR="bash-scripts"
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 DOCKER_PATH="/home/docker"
-DOCKER_CONTAINER_PATH="$DOCKER_PATH/containers"
-DOCKER_STACKS_PATH="$DOCKER_PATH/stacks"
-DOCKER_STORAGE_PATH="$DOCKER_PATH/storage"
-DOCKER_TEMP_PATH="$DOCKER_PATH/tmp"
+DOCKER_CONTAINER_PATH="$DOCKER_PATH/$DOCKER_CONTAINER_DIR"
+DOCKER_STACKS_PATH="$DOCKER_PATH/$DOCKER_STACKS_DIR"
+DOCKER_STORAGE_PATH="$DOCKER_PATH/$DOCKER_STORAGE_DIR"
+DOCKER_TEMP_PATH="$DOCKER_PATH/$DOCKER_TEMP_DIR"
 
 # Create a temporary env file
 ENV_FILE=$(mktemp)
@@ -22,7 +26,7 @@ echo "DOCKER_STORAGE_PATH=$DOCKER_STORAGE_PATH" >> "$ENV_FILE"
 echo "DOCKER_TEMP_PATH=$DOCKER_TEMP_PATH" >> "$ENV_FILE"
 
 # Array of scripts to run
-scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh")
+scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh", "06-setup-stacks.sh")
 
 # Check if scripts exist
 for script in "${scripts[@]}"; do
