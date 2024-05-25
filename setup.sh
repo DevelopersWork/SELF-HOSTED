@@ -10,7 +10,7 @@ source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
 # Array of scripts to run
-scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh", "06-setup-stacks.sh")
+scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh" "06-setup-stacks.sh")
 
 # Check if scripts exist
 for script in "${scripts[@]}"; do
@@ -27,7 +27,7 @@ done
 AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
 
 # Create a temporary directory for the docker user
-TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d homelab.XXXXXX") || { echo "Failed to create temporary directory for the docker user."; exit 1; }
+TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary directory for the docker user."; exit 1; }
 # TEMP_ENV_FILE=$($AS_DOCKER_USER -c "mktemp $TEMP_DIR/.env.XXXXXX") # Future reference
 
 # Copy the bash scripts and env file to the temporary directory
