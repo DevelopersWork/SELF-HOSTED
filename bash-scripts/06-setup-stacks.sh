@@ -8,7 +8,10 @@ ENV_FILE="$1"
 source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
 
 # Ensure script is running as the 'docker' user
-if [ "$(id -u)" -ne "$DOCKER_UID" ] || [ "$(id -g)" -ne "$DOCKER_GID" ]; then
+if [ -z "$DOCKER_PUID" ] || [ -z "$DOCKER_GUID" ]; then
+    echo "ERROR: DOCKER_PUID or DOCKER_GUID is not set. Please check your environment variables."
+    exit 1
+elif [ "$(id -u)" -ne "$DOCKER_PUID" ] || [ "$(id -g)" -ne "$DOCKER_GUID" ]; then
     echo "This script must be run as the 'docker' user."
     exit 1
 fi

@@ -33,7 +33,6 @@ TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary
 # Copy the bash scripts and env file to the temporary directory
 sudo cp -r "$SCRIPTS_PATH" "$ENV_FILE" "$TEMP_DIR/"
 sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
-echo "Created temporary directory for docker user and Copied scripts and env file to $TEMP_DIR."  # Informational output
 
 # Run scripts 04 and 05 as the 'docker' user
 for script in "${scripts[@]:3}"; do  # Run the remaining scripts as docker user
