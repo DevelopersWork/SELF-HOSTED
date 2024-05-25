@@ -4,7 +4,7 @@
 DOCKER_USER="docker"
 DOCKER_GROUP="docker"
 SCRIPTS_DIR="bash-scripts"
-SCRIPTS_PATH="$(dirname "$(realpath "$0")")/bash-scripts"
+SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 DOCKER_PATH="/home/docker"
 DOCKER_CONTAINER_PATH="$DOCKER_PATH/containers"
 DOCKER_STACKS_PATH="$DOCKER_PATH/stacks"
