@@ -16,7 +16,7 @@ fi
 # Function to remove containers with a specific image base (ignoring tag)
 remove_containers_with_image_base() {
     local image_base=$1
-    local container_ids=$(docker ps -a --filter "ancestor=$image_base" --quiet) # Filter by ancestor
+    local container_ids=$(docker container ls -a | grep "$image_base" | awk '{ print $1 }') # Filter by ancestor
 
     if [ -n "$container_ids" ]; then
         echo "Removing existing containers with image base: $image_base"
