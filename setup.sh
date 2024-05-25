@@ -52,7 +52,7 @@ sudo chown "$DOCKER_USER" "$ENV_FILE" || {
 DOCKER_SCRIPTS_DIR="$DOCKER_TEMP_DIR/bash-scripts"
 sudo mkdir -p "$DOCKER_SCRIPTS_DIR"
 sudo cp -r "$SCRIPTS_DIR/*" "$DOCKER_SCRIPTS_DIR/"
-sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_SCRIPTS_DIR"
+sudo chown -R "$DOCKER_UID":"$DOCKER_GID" "$DOCKER_SCRIPTS_DIR"
 
 # Run scripts 04 and 05 as the 'docker' user
 for script in "${scripts[@]:3}"; do  # Run the remaining scripts as docker user
