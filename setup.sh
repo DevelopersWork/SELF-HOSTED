@@ -19,7 +19,7 @@ done
 
 # Run scripts 01, 02, and 03 as root
 for script in "${scripts[@]:0:3}"; do  # Run the first three scripts as root
-  sudo /bin/bash "$SCRIPTS_PATH/$script" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
+  sudo /bin/bash "$SCRIPTS_PATH/$script" "$SCRIPTS_PATH" "$ENV_FILE" || { echo "Error running $script"; exit 1; }
   echo "Script $script completed successfully."
 done
 
@@ -42,7 +42,7 @@ sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
 # Run scripts 04 and 05 as the 'docker' user
 for script in "${scripts[@]:3}"; do  # Run the remaining scripts as docker user
-  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
+  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
   echo "Script $script completed successfully."
 done
 

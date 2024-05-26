@@ -13,10 +13,10 @@ DOCKER_GUID=$(id -g "$DOCKER_USER")
 
 # Ensure script is running as the 'docker' user
 if [ -z "$DOCKER_PUID" ] || [ -z "$DOCKER_GUID" ]; then
-    echo "ERROR: DOCKER_PUID or DOCKER_GUID is not set. Please check your environment variables."
+    echo "ERROR: DOCKER_USER is not set. Please check your environment variables."
     exit 1
 elif [ "$(id -u)" -ne "$DOCKER_PUID" ] || [ "$(id -g)" -ne "$DOCKER_GUID" ]; then
-    echo "This script must be run as the 'docker' user."
+    echo "This script must be run as the '$DOCKER_USER' user."
     exit 1
 fi
 

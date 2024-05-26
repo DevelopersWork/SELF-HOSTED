@@ -88,3 +88,44 @@ install_package() {
 
     echo "$package_name installation complete."
 }
+
+# Function to create a directory if it doesn't exist
+create_dir_if_not_exists() {
+    local dir_path="$1"
+    local owner_user="$2" 
+    local owner_group="$3" 
+
+    if [[ ! -d "$dir_path" ]]; then
+        echo "Creating directory: $dir_path"
+        mkdir -p "$dir_path" || { echo "Failed to create directory: $dir_path"; exit 1; }
+        set_ownership $dir_path $owner_user $owner_group
+        set_permissions $dir_path
+    fi
+}
+
+# Function to set ownership of a directory (if not already owned by the specified user/group)
+set_ownership() {
+    local dir_path="$1"
+    local owner_user="$2" 
+    local owner_group="$3" 
+
+    if ! [[ "$(stat -c %u "$dir_path")" = "$owner_uid" ]] || ! [[ "$(stat -c %g "$dir_path")" = "$owner_gid" ]]; then
+        echo "Setting ownership of $dir_path to $owner_user:$owner_group"
+        chown "$owner_user:$owner_group" "$dir_path" || { 
+            echo "Failed to set ownership for $dir_path" >&2
+            exit 1 
+        }
+    fi
+}
+
+# Function to set permissions on a directory (optional)
+set_permissions() {
+    local dir_path="$1"
+    local permissions="${2:-754}" 
+
+    echo "Setting permissions for $dir_path to $permissions"
+    chmod "$permissions" "$dir_path" || { 
+        echo "Failed to set permissions for $dir_path" >&2
+        exit 1 
+    }
+}
