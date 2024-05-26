@@ -52,7 +52,39 @@ check_group() {
 # Function to remove containers with a specific image base (ignoring tag)
 remove_containers_with_image_base() {
     local image_base="$1"
+    local container_ids=$(docker container ls -a | grep "$image_base" | awk '{ print $1 }') 
 
-    # Filter containers by image base and remove (force if necessary)
-    docker container ls -aqf "ancestor=$image_base" | xargs docker container rm -f
+    if [ -n "$container_ids" ]; then
+        echo "Removing existing containers with image base: $image_base"
+        docker container rm -f $container_ids # Force removal
+    fi
+}
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" &> /dev/null
+}
+
+# Function to install a package (generic)
+install_package() {
+    local package_manager="$1"
+    local package_name="$2"
+    local install_options=${3:-"-y"}  # Default to -y (yes to all prompts)
+
+    echo "Installing $package_name using $package_manager..."
+
+    # Update package lists (some package managers don't need this)
+    if $package_manager update &> /dev/null; then 
+        echo "Package lists updated."
+    else
+        echo "Warning: Failed to update package lists. Continuing with installation..."
+    fi
+
+    # Install the package
+    $package_manager install $install_options "$package_name" || {
+        echo "Error: Failed to install $package_name." >&2  # Redirect error message to stderr
+        exit 1
+    }
+
+    echo "$package_name installation complete."
 }
