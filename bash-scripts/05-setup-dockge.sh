@@ -14,7 +14,7 @@ DOCKER_GUID=$(id -g "$DOCKER_USER")
 # Ensure script is running as docker user
 check_user $DOCKER_PUID
 # Ensure script is running as docker group
-check_user $DOCKER_GUID
+check_group $DOCKER_GUID
 
 # Data and Volumes Configuration
 DOCKGE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/dockge"
