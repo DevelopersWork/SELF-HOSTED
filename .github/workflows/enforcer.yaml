@@ -1,0 +1,28 @@
+# .github/workflows/enforcer.yaml
+name: 'Pull Request Validation'
+
+on:
+  pull_request:
+    branches: [main, dev, alpha]
+
+jobs:
+  check_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR is to main
+        if: github.base_ref == 'main' && github.head_ref != 'alpha'
+        run: |
+          echo "ERROR: You can only merge to main from alpha."
+          exit 1
+
+      - name: Check if PR is to alpha
+        if: github.base_ref == 'alpha' && github.head_ref != 'dev'
+        run: |
+          echo "ERROR: You can only merge to alpha from dev."
+          exit 1
+
+      - name: Check if PR is to dev and has feature/ prefix
+        if: github.base_ref == 'dev' && !startsWith(github.head_ref, 'feature/')
+        run: |
+          echo "ERROR: You can only merge to dev from branches prefixed with 'feature/'."
+          exit 1

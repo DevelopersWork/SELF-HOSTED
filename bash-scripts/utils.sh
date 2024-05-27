@@ -127,6 +127,17 @@ create_file_if_not_exists() {
     fi
 }
 
+# Function to copy a file if it doesn't exist
+copy_file_if_not_exists() {
+    local source_file="$1"
+    local dest_file="$2"
+    local behavior="$3"
+
+    if [[ ! -f "$dest_file" ]]; then
+        cp "$source_file" "$dest_file" || { echo "Failed to copy $source_file" >&2; exit 1; }
+    fi
+}
+
 # Function to set ownership of a directory (if not already owned by the specified user/group)
 set_ownership() {
     local dir_path="$1"
@@ -152,4 +163,18 @@ set_permissions() {
         echo "Failed to set permissions for $dir_path" >&2
         exit 1 
     }
+}
+
+# Function to update .env file with missing variables
+update_env_file() {
+    local env_file="$1"
+    local var_name="$2"
+    local var_value="$3"
+    local behavior="${4:-"none"}"
+
+    if [[ "$behavior" == "overwrite" ]]; then  
+        sed -i "s/^$var_name=.*$/$var_name=$var_value/" "$env_file"  || { echo "Failed to copy $source_file" >&2; exit 1; }
+    elif ! grep -q "^$var_name=" "$env_file"; then  
+        echo "$var_name=$var_value" >> "$env_file"  || { echo "Failed to copy $source_file" >&2; exit 1; }
+    fi
 }

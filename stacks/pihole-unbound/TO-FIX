@@ -1,5 +1,0 @@
-LXC:
-cp: cannot create special file '/opt/unbound/etc/unbound/dev/random': Operation not permitted
-cp: cannot create special file '/opt/unbound/etc/unbound/dev/urandom': Operation not permitted
-cp: cannot create special file '/opt/unbound/etc/unbound/dev/null': Operation not permitted
-unbound[1:0] error: Could not open logfile /dev/null: Permission denied

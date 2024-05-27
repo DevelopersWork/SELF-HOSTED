@@ -48,7 +48,15 @@ After running the setup script:
 
 ## Updates
 
-To add new stacks or update existing ones, use the `update.sh` script. You can create your own stacks by following the instructions in `stacks/README.md`. Each stack includes a `deploy.sh` script to handle setup and configuration automatically.
+To add or update **all** stacks, use the `update.sh` script:
+```bash
+sudo bash update.sh
+``` 
+To update a **specific** stack, edit the `.env` file and modify the `STACKS` variable to include only the name of the stack you want to update. For example:
+```bash
+STACKS="filebrowser"
+``` 
+After changing the `.env` file, run `update.sh` again to update only the specified stack.
 
 ## Contributing
 

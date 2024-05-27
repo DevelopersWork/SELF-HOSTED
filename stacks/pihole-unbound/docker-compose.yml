@@ -1,3 +1,4 @@
+# stacks/pihole-unbound/docker-compose.yml
 version: '3.8'
 
 services:
@@ -5,14 +6,15 @@ services:
     container_name: pihole
     image: pihole/pihole:2024.05.0
     hostname: pihole
+    user: ${PUID}:${PGID}
     ports:
       - ${PIHOLE_DNS_PORT:-53}:53/tcp
       - ${PIHOLE_DNS_PORT:-53}:53/udp
       - ${PIHOLE_HTTP_WEBPORT:-80}:80/tcp
       - ${PIHOLE_HTTPS_WEBPORT:-443}:443/tcp
     environment:
-      - TZ=${TZ:-IST}
-      - WEBPASSWORD=${WEBPASSWORD}
+      - TZ=${PIHOLE_TZ:-IST}
+      - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
       - PIHOLE_DNS_=unbound
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
@@ -20,8 +22,8 @@ services:
       - WEBTHEME=high-contrast-dark
       - DNSMASQ_LISTENING=all
     volumes:
-      - ${DOCKER_VOLUMES_DIR}/pihole:/etc/pihole:rw
-      - ${DOCKER_VOLUMES_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d:rw
+      - "${PIHOLE_VOLUME_PATH}:/etc/pihole/:rw"
+      - "${PIHOLE_VOLUME_PATH}/dnsmasq.d:/etc/dnsmasq.d/:rw"
     networks:
       - dns
     restart: unless-stopped
@@ -30,26 +32,23 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: "${PIHOLE_RESOURCES_CPUS}"
+          memory: "${PIHOLE_RESOURCES_MEMORY}"
   unbound:
     container_name: unbound
     image: mvance/unbound:1.19.3
     hostname: unbound
+    user: ${PUID}:${PGID}
     volumes:
-      # https://github.com/MatthewVance/unbound-docker/blob/master/1.19.3/data/opt/unbound/etc/unbound/
-      - type: bind
-        source: ${DOCKER_VOLUMES_DIR}/unbound
-        target: /opt/unbound/etc/unbound/
-        read_only: false
+      - "${UNBOUND_VOLUME_PATH}:/opt/unbound/etc/unbound/:rw"
     networks:
       - dns
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 256M
+          cpus: "${UNBOUND_RESOURCES_CPUS}"
+          memory: "${UNBOUND_RESOURCES_MEMORY}"
 
 networks:
   dns:

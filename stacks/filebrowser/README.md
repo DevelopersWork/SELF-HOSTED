@@ -5,11 +5,11 @@ This stack deploys File Browser, a user-friendly web-based file manager for your
 ## Stack Files
 
 - `docker-compose.yml`: Defines the File Browser service and its configuration.
-- `deploy.sh`: Script to automatically create the required `.env` file for the stack and set up the database.
+- `deploy.sh`: Script to automatically create or update the required `.env` file for the stack and set up the database.
 
 ## Services
 
-- **filebrowser:**  The main File Browser application.
+- **filebrowser:** The main File Browser application.
 
 ## Environment Variables
 
@@ -19,14 +19,19 @@ This stack deploys File Browser, a user-friendly web-based file manager for your
 - **`FILEBROWSER_HTTP_WEBPORT`**: The port on which File Browser is accessible (defaults to `8082`).
 - **`FILEBROWSER_RESOURCES_CPUS`**: The number of CPU cores allocated to File Browser (defaults to `0.5`).
 - **`FILEBROWSER_RESOURCES_MEMORY`**: The amount of memory allocated to File Browser (defaults to `512M`).
+- **`MOUNT_PATH`**: The path on your host system that you want to share with File Browser (no default, must be specified in the `deploy.sh` script).
 
 ## Usage
 
-1. **Deployment:**
-   - Run the `update.sh` script from the root of the repository to deploy the File Browser stack. The `deploy.sh` script will create the necessary files.
-2. **Accessing File Browser:**
-   - After deployment, you can access File Browser at `http://<your-host-ip>:8082` (or the port you specified in the `.env` file).
+1.  **Preparation:**
+    -   Open the `deploy.sh` script in this directory.
+    -   Set the `MOUNT_PATH` variable to the directory on your host system that you want to share with File Browser.  
+    -   (Optional) Adjust any other environment variables if needed.
+    -   Run the `update.sh` script from the root of the repository to execute the `deploy.sh` script.
+
+2.  **Accessing File Browser:**
+    -   Open your browser and navigate to `http://<your-host-ip>:8082` (or the port you specified).
 
 ## Authors
 
-* Developers@Work
+*   Developers@Work

@@ -22,7 +22,6 @@ This directory contains Bash scripts that automate various aspects of setting up
     -   Removes any existing Dockge containers for a fresh setup.
 6.  **`06-setup-stacks.sh`:**
     -   Deploys Docker Compose stacks defined in the `stacks` directory.
-    -   Copies the stack's `docker-compose.yml`, `.env` (if available), and optional `deploy.sh` script to the Docker user's home directory.
 
 ### Master Scripts
 
@@ -45,3 +44,9 @@ This directory contains Bash scripts that automate various aspects of setting up
 *   **`create_file_if_not_exists <path> [owner] [group] [permissions]`:** Creates an empty file at the given path if it doesn't exist, optionally setting the owner, group, and permissions.
 *   **`set_ownership <path> <owner> <group>`:** Sets the ownership of the specified file or directory.
 *   **`set_permissions <path> [permissions]`:** Sets the permissions of the specified file or directory (defaults to `654`).
+*   **`copy_file_if_not_exists <source_file> <dest_file> [behavior]`:**
+    -   Copies a file from `source_file` to `dest_file` only if the destination file doesn't exist.
+    -   Optional `behavior` argument can be "overwrite" (replace existing file) or "append" (add to existing file). Defaults to no action if the file exists. 
+*   **`update_env_file <env_file> <var_name> <var_value> [behavior]`:**
+    -   Updates an `.env` file with a given variable name and value.
+    -   Optional `behavior` argument can be "overwrite" (replace existing variable) or "append" (add if missing). Defaults to "none" (no action if variable exists).
