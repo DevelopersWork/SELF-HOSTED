@@ -1,5 +1,5 @@
 #!/bin/bash
-# init-env-file.sh
+# deploy.sh
 
 # Source the utility script
 source "$1/utils.sh" 

@@ -17,7 +17,32 @@ check_user $DOCKER_PUID
 # Ensure script is running as docker group
 check_group $DOCKER_GUID
 
-# TODO
-STACK_NAME=$3
+STACK_NAME="$3"          
+STACK_SOURCE_PATH="$1/../stacks/$STACK_NAME"
+if [[ -z "$STACK_NAME" ]]; then
+    echo "Error: Stack name not provided."
+    exit 1
+elif [[ ! -d "$STACK_SOURCE_PATH" ]]; then
+    echo "Error: Stack directory '$STACK_NAME' not found in $STACK_SOURCE_PATH."
+    exit 1
+fi
 
+# Create the destination directory for the stack in the Docker path
+STACK_DEST_PATH="$DOCKER_STACKS_PATH/$STACK_NAME"
+create_dir_if_not_exists "$STACK_DEST_PATH"
 
+# Copy docker-compose.yml file to the destination directory
+cp "$STACK_SOURCE_PATH/docker-compose.yml" "$STACK_DEST_PATH/" || {
+    echo "Error: Failed to copy docker-compose.yml for $STACK_NAME."
+    exit 1
+}
+
+# Execute the deploy.sh (if exists) in the stack directory
+SCRIPT_FILE="$STACK_SOURCE_PATH/deploy.sh"  
+if [[ -f "$SCRIPT_FILE" ]]; then
+    echo "Executing script: $SCRIPT_FILE"
+    chmod +x "$SCRIPT_FILE" && /bin/bash "$SCRIPT_FILE" "$2" || {
+        echo "Error: Failed to execute deploy.sh for $STACK_NAME."
+        exit 1
+    }
+fi
