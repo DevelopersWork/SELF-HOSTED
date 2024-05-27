@@ -15,6 +15,7 @@ NPM_VOLUME_PATH="$DOCKER_CONTAINER_PATH/nginx-proxy-manager"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"
+create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP" 
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "CLOUDFLARED_TUNNEL_TOKEN" ""
