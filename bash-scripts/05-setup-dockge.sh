@@ -10,7 +10,7 @@ load_config "$2"
 
 # Get the docker user's UID and GID
 DOCKER_PUID=$(id -u "$DOCKER_USER")
-DOCKER_GUID=$(id -g "$DOCKER_USER")
+DOCKER_GUID=$(getent group "$DOCKER_GROUP" | cut -d: -f3)
 
 # Ensure script is running as docker user
 check_user $DOCKER_PUID
@@ -23,7 +23,7 @@ DOCKGE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/dockge"
 # Create the Dockge volume directory
 # Set permissions on the Dockge volume directory
 echo "Creating Portainer volume directory at $DOCKGE_VOLUME_PATH..."
-create_dir_if_not_exists "$DOCKGE_VOLUME_PATH"
+create_dir_if_not_exists "$DOCKGE_VOLUME_PATH" "$DOCKER_PUID" "$DOCKER_GUID"
 
 # Remove existing Dockge containers (using the improved function)
 remove_containers_with_image_base "louislam/dockge"

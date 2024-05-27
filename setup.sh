@@ -25,7 +25,7 @@ done
 
 # Get the docker user's UID and GID after user creation
 DOCKER_PUID=$(id -u "$DOCKER_USER")
-DOCKER_GUID=$(id -g "$DOCKER_USER")
+DOCKER_GUID=$(getent group "$DOCKER_GROUP" | cut -d: -f3)
 echo "Docker User ID: $DOCKER_PUID"
 echo "Docker Group ID: $DOCKER_GUID"
 

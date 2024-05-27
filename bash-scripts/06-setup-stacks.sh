@@ -10,7 +10,7 @@ load_config "$2"
 
 # Get the docker user's UID and GID
 DOCKER_PUID=$(id -u "$DOCKER_USER")
-DOCKER_GUID=$(id -g "$DOCKER_USER")
+DOCKER_GUID=$(getent group "$DOCKER_GROUP" | cut -d: -f3)
 
 # Ensure script is running as docker user
 check_user $DOCKER_PUID
@@ -29,7 +29,7 @@ fi
 
 # Create the destination directory for the stack in the Docker path
 STACK_DEST_PATH="$DOCKER_STACKS_PATH/$STACK_NAME"
-create_dir_if_not_exists "$STACK_DEST_PATH"
+create_dir_if_not_exists "$STACK_DEST_PATH" "$DOCKER_PUID" "$DOCKER_GUID"
 
 # Copy docker-compose.yml file to the destination directory
 cp "$STACK_SOURCE_PATH/docker-compose.yml" "$STACK_DEST_PATH/" || {
