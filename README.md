@@ -21,7 +21,7 @@ This repository streamlines the creation of a secure and manageable Docker-based
 
 2.  **Clone:**
     ```bash
-    git clone [https://github.com/DevelopersWork/Homelab.git](https://github.com/DevelopersWork/Homelab.git)
+    git clone https://github.com/DevelopersWork/Homelab.git
     ```
 
 3.  **Setup:**

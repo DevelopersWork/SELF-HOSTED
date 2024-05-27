@@ -26,7 +26,6 @@ Each stack is organized in a separate subdirectory and consists of the following
 
 2.  **Prepare the Stack:**
     -   Run the `update.sh` script from the root of the repository to run the `deploy.sh` script for the stack:
-
     ```bash
     sudo bash update.sh
     ```
