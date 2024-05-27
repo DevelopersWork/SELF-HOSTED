@@ -3,22 +3,21 @@ version: "3.8"
 services:
   filebrowser:
     container_name: filebrowser
-    image: filebrowser/filebrowser:v2.29.0
+    image: filebrowser/filebrowser:v2.30.0
     hostname: filebrowser
     ports:
       - ${FILEBROWSER_HTTP_WEBPORT:-80}:80/tcp
+    user: ${PUID}:${PGID}
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /:/srv
-      - ${DOCKER_VOLUMES_DIR}/filebrowser:/etc/filebrowser:rw
+      - ${MOUNT_PATH:-/}:/srv/:rw
+      - ${FILEBROWSER_VOLUME_PATH}/database/filebrowser.db:/database.db:rw
     restart: unless-stopped
     network_mode: bridge
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 512M
+          cpus: "${FILEBROWSER_RESOURCES_CPUS}"
+          memory: "${FILEBROWSER_RESOURCES_MEMORY}"

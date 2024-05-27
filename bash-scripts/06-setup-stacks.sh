@@ -1,4 +1,5 @@
 #!/bin/bash
+# 06-setup-stacks.sh
 
 # Source the utility script
 source "$1/utils.sh" 
@@ -17,3 +18,6 @@ check_user $DOCKER_PUID
 check_group $DOCKER_GUID
 
 # TODO
+STACK_NAME=$3
+
+

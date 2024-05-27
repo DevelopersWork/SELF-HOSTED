@@ -1,4 +1,5 @@
 #!/bin/bash
+# 04-setup-portainer.sh
 
 # Source the utility script
 source "$1/utils.sh" 

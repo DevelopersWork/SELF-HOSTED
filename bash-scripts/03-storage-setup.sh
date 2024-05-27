@@ -1,4 +1,5 @@
 #!/bin/bash
+# 03-storage-setup.sh
 
 # Source the utility script
 source "$1/utils.sh" 

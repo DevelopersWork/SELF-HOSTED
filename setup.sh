@@ -36,15 +36,21 @@ AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
 TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary directory for the docker user."; exit 1; }
 # TEMP_ENV_FILE=$($AS_DOCKER_USER -c "mktemp $TEMP_DIR/.env.XXXXXX") # Future reference
 
-# Copy the bash scripts and env file to the temporary directory
-sudo cp -r "$SCRIPTS_PATH" "$ENV_FILE" "$TEMP_DIR/"
+# Copy the repository to the temporary directory and with owner as the docker user
+sudo cp -r "." "$TEMP_DIR/"
 sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
 # Run scripts 04 and 05 as the 'docker' user
-for script in "${scripts[@]:3}"; do  # Run the remaining scripts as docker user
+for script in "${scripts[@]:3:6}"; do  
   $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
   echo "Script $script completed successfully."
 done
+
+# Run script 06 as the 'docker' user for each stack
+for stack in "${STACKS[@]}"; do  
+  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$scripts[6]" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running $scripts[6] for $stack"; exit 1; }
+done
+echo "Script $scripts[6] completed successfully."
 
 # Clean up - remove the temporary directory
 sudo rm -rf "$TEMP_DIR"
