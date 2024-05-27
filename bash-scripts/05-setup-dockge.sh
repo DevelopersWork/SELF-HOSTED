@@ -23,7 +23,7 @@ DOCKGE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/dockge"
 # Create the Dockge volume directory
 # Set permissions on the Dockge volume directory
 echo "Creating Portainer volume directory at $DOCKGE_VOLUME_PATH..."
-create_dir_if_not_exists "$DOCKGE_VOLUME_PATH" "$DOCKER_PUID" "$DOCKER_GUID"
+create_dir_if_not_exists "$DOCKGE_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Remove existing Dockge containers (using the improved function)
 remove_containers_with_image_base "louislam/dockge"

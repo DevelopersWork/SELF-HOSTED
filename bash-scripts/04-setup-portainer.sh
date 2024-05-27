@@ -23,7 +23,7 @@ PORTAINER_VOLUME_PATH="$DOCKER_CONTAINER_PATH/portainer"
 # Create the Portainer volume directory
 # Set permissions on the Portainer volume directory
 echo "Creating Portainer volume directory at $PORTAINER_VOLUME_PATH..."
-create_dir_if_not_exists "$PORTAINER_VOLUME_PATH" "$DOCKER_PUID" "$DOCKER_GUID"
+create_dir_if_not_exists "$PORTAINER_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Remove existing Portainer containers (using the improved function)
 remove_containers_with_image_base "portainer/portainer-ce"

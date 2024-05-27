@@ -29,7 +29,7 @@ fi
 
 # Create the destination directory for the stack in the Docker path
 STACK_DEST_PATH="$DOCKER_STACKS_PATH/$STACK_NAME"
-create_dir_if_not_exists "$STACK_DEST_PATH" "$DOCKER_PUID" "$DOCKER_GUID"
+create_dir_if_not_exists "$STACK_DEST_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Copy docker-compose.yml file to the destination directory
 cp "$STACK_SOURCE_PATH/docker-compose.yml" "$STACK_DEST_PATH/" || {
@@ -40,7 +40,6 @@ cp "$STACK_SOURCE_PATH/docker-compose.yml" "$STACK_DEST_PATH/" || {
 # Execute the deploy.sh (if exists) in the stack directory
 SCRIPT_FILE="$STACK_SOURCE_PATH/deploy.sh"  
 if [[ -f "$SCRIPT_FILE" ]]; then
-    echo "Executing script: $SCRIPT_FILE"
     chmod +x "$SCRIPT_FILE" && /bin/bash "$SCRIPT_FILE" "$1" "$2" || {
         echo "Error: Failed to execute deploy.sh for $STACK_NAME."
         exit 1
