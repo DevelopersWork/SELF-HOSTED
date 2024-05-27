@@ -1,11 +1,12 @@
 #!/bin/bash
+# bash-scripts/utils.sh
 
 # Function to load and export environment variables
 load_config() {
     local config_file="$1"
 
     if [[ ! -f "$config_file" ]]; then
-        echo "Error: Config file '$config_file' not found."
+        echo "Error: Config file '$config_file' not found." >&2
         exit 1
     fi
 
@@ -15,39 +16,40 @@ load_config() {
     set +o allexport
 
     if [[ $? -ne 0 ]]; then
-        echo "Error: Failed to source config file '$config_file'."
+        echo "Error: Failed to source config file '$config_file'." >&2
         exit 1
     fi
 }
 
-# Function to validate the current user against the expected UID
+# Function to validate the current user's UID
 check_user() {
     local expected_uid="$1"
 
     # Ensure script is running as the correct user
     if [[ -z "$expected_uid" ]]; then
-        echo "ERROR: User UID is not set. Please check your environment variables."
+        echo "ERROR: User UID is not set. Please check your environment variables." >&2
         exit 1
     elif [[ "$(id -u)" -ne "$expected_uid" ]]; then
-        echo "This script must be run as the user with UID '$expected_uid'."
+        local expected_user=$(id -un "$expected_uid")
+        echo "This script must be run as the user '$expected_user' (UID $expected_uid)." >&2
         exit 1
     fi
 }
 
-# Function to validate the current user against the expected GID
+# Function to validate the current user's GID
 check_group() {
     local expected_gid="$1"
 
     # Ensure script is running as the correct group
     if [[ -z "$expected_gid" ]]; then
-        echo "ERROR: User GID is not set. Please check your environment variables."
+        echo "ERROR: User GID is not set. Please check your environment variables." >&2
         exit 1
     elif [[ "$(id -g)" -ne "$expected_gid" ]]; then
-        echo "This script must be run as the user with GID '$expected_gid'."
+        local expected_group=$(getent group "$expected_gid" | cut -d: -f1)
+        echo "This script must be run as a member of the group '$expected_group' (GID $expected_gid)." >&2
         exit 1
     fi
 }
-
 
 # Function to remove containers with a specific image base (ignoring tag)
 remove_containers_with_image_base() {
@@ -82,7 +84,7 @@ install_package() {
 
     # Install the package
     $package_manager install $install_options "$package_name" || {
-        echo "Error: Failed to install $package_name." >&2  # Redirect error message to stderr
+        echo "Error: Failed to install $package_name." >&2
         exit 1
     }
 
@@ -92,14 +94,36 @@ install_package() {
 # Function to create a directory if it doesn't exist
 create_dir_if_not_exists() {
     local dir_path="$1"
-    local owner_user="$2" 
-    local owner_group="$3" 
+    local owner_user="$2"
+    local owner_group="$3"
+    local permissions="${4:-755}"
 
     if [[ ! -d "$dir_path" ]]; then
         echo "Creating directory: $dir_path"
-        mkdir -p "$dir_path" || { echo "Failed to create directory: $dir_path"; exit 1; }
+        mkdir -p "$dir_path" || { 
+            echo "Failed to create directory: $dir_path" >&2
+            exit 1
+        }
         set_ownership $dir_path $owner_user $owner_group
-        set_permissions $dir_path
+        set_permissions $dir_path $permissions
+    fi
+}
+
+# Function to create an empty file if it doesn't exist
+create_file_if_not_exists() {
+    local file_path="$1"
+    local owner_user="$2"
+    local owner_group="$3"
+    local permissions="${4:-644}"
+
+    if [[ ! -f "$file_path" ]]; then
+        echo "Creating file: $file_path"
+        touch "$file_path" || { 
+            echo "Failed to create file: $file_path" >&2 
+            exit 1 
+        }
+        set_ownership $file_path $owner_user $owner_group
+        set_permissions $file_path $permissions
     fi
 }
 
@@ -121,7 +145,7 @@ set_ownership() {
 # Function to set permissions on a directory (optional)
 set_permissions() {
     local dir_path="$1"
-    local permissions="${2:-754}" 
+    local permissions="${2:-654}" 
 
     echo "Setting permissions for $dir_path to $permissions"
     chmod "$permissions" "$dir_path" || { 

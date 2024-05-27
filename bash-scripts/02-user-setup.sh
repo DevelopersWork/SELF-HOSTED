@@ -1,5 +1,5 @@
 #!/bin/bash
-# 02-user-setup.sh
+# bash-scripts/02-user-setup.sh
 
 # Source the utility script
 source "$1/utils.sh" 

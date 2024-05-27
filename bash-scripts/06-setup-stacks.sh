@@ -1,5 +1,5 @@
 #!/bin/bash
-# 06-setup-stacks.sh
+# bash-scripts/06-setup-stacks.sh
 
 # Source the utility script
 source "$1/utils.sh" 

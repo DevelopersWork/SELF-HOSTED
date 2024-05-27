@@ -1,5 +1,5 @@
 #!/bin/bash
-# 04-setup-portainer.sh
+# bash-scripts/04-setup-portainer.sh
 
 # Source the utility script
 source "$1/utils.sh" 
@@ -36,7 +36,7 @@ docker run -d \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "$PORTAINER_VOLUME_PATH:/data" \
     --name portainer \
-    --restart="unless-stopped" \
+    --restart unless-stopped \
     --cpus="0.2" \
     --memory="256m" \
     portainer/portainer-ce:2.20.3 || { echo "Failed to start Portainer container."; exit 1; }

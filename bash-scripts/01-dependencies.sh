@@ -1,5 +1,5 @@
 #!/bin/bash
-# 01-dependencies.sh
+# bash-scripts/01-dependencies.sh
 
 # Source the utility script
 source "$1/utils.sh" 

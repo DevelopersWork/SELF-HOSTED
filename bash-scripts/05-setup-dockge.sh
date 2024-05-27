@@ -1,5 +1,5 @@
 #!/bin/bash
-# 05-setup-dockge.sh
+# bash-scripts/05-setup-dockge.sh
 
 # Source the utility script
 source "$1/utils.sh" 
@@ -37,7 +37,7 @@ docker run -d \
     -v "$DOCKER_STACKS_PATH:/opt/stacks/:rw" \
     -v "$DOCKGE_VOLUME_PATH:/app/data/:rw" \
     --name dockge \
-    --restart="unless-stopped" \
+    --restart unless-stopped \
     --cpus="0.2" \
     --memory="256m" \
     louislam/dockge:1.4.2 || { echo "Failed to start Dockge container."; exit 1; }
