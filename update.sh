@@ -30,9 +30,9 @@ sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
 # Run script 06 as the 'docker' user for each stack
 for stack in "${STACKS[@]}"; do  
-  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/${scripts[5]}" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running ${scripts[5]} for $stack"; exit 1; }
+  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/${scripts[0]}" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running ${scripts[0]} for $stack"; exit 1; }
 done
-echo "Script ${scripts[5]} completed successfully."
+echo "Script ${scripts[0]} completed successfully."
 
 # Clean up - remove the temporary directory
 sudo rm -rf "$TEMP_DIR"

@@ -41,7 +41,7 @@ cp "$STACK_SOURCE_PATH/docker-compose.yml" "$STACK_DEST_PATH/" || {
 SCRIPT_FILE="$STACK_SOURCE_PATH/deploy.sh"  
 if [[ -f "$SCRIPT_FILE" ]]; then
     echo "Executing script: $SCRIPT_FILE"
-    chmod +x "$SCRIPT_FILE" && /bin/bash "$SCRIPT_FILE" "$2" || {
+    chmod +x "$SCRIPT_FILE" && /bin/bash "$SCRIPT_FILE" "$1" "$2" || {
         echo "Error: Failed to execute deploy.sh for $STACK_NAME."
         exit 1
     }
