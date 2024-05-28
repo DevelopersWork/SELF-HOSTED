@@ -46,6 +46,7 @@ This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validati
 *   Change the default `PIHOLE_WEBPASSWORD` in the `deploy.sh` script before running it for security.
 *   The `dnsmasq.d` directory in the Pi-hole volume allows you to add custom DNS configurations.
 *   Consult the Pi-hole and Unbound documentation for more advanced configuration options.
+*   **Due to current limitations, the Pi-hole and Unbound runs as root within the Docker container.**
 
 ## Authors
 

@@ -6,7 +6,7 @@ This repository streamlines the creation of a secure and manageable Docker-based
 
 ## Why This Setup?
 
-*   **Rootless Docker:**  Enhances security by running containers with limited privileges, preventing full root access to your system.
+*   **Rootless Docker (wherever possible):** Enhances security by running containers with limited privileges, preventing full root access to your system wherever feasible. Some containers might still require root access due to current limitations.
 *   **Portainer for Management:** Provides a powerful web-based UI for monitoring, managing, and troubleshooting your containers.
 *   **Dockge for Stacks:** Offers an intuitive interface to deploy, configure, and update Docker Compose stacks effortlessly.
 *   **Customizable Stacks:** Easily deploy pre-configured stacks or create your own to tailor the environment to your needs.

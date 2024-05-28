@@ -50,6 +50,7 @@ This stack deploys Nginx Proxy Manager (NPM), a powerful and user-friendly web i
 
 - **Custom Configuration:** Nginx Proxy Manager offers extensive options for customization. Refer to the official documentation for advanced configuration.
 - **Security:** Remember to set strong passwords for your MariaDB database.
+- **Due to current limitations, the Nginx Proxy Manager container runs as root within the Docker container.**
 
 ## Authors
 

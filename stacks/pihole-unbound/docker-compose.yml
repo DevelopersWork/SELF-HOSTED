@@ -6,21 +6,23 @@ services:
     container_name: pihole
     image: pihole/pihole:2024.05.0
     hostname: pihole
-    user: ${PUID}:${PGID}
     ports:
       - ${PIHOLE_DNS_PORT:-53}:53/tcp
       - ${PIHOLE_DNS_PORT:-53}:53/udp
       - ${PIHOLE_HTTP_WEBPORT:-80}:80/tcp
       - ${PIHOLE_HTTPS_WEBPORT:-443}:443/tcp
     environment:
-      - TZ=${PIHOLE_TZ:-IST}
-      - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
+      - PIHOLE_UID=${PUID}
+      - PIHOLE_GID=${PGID}
       - PIHOLE_DNS_=unbound
+      - IPv6=false
+      - DNSMASQ_LISTENING=${PIHOLE_DNSMASQ_LISTENING}
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
-      - IPv6=false
+      - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
       - WEBTHEME=high-contrast-dark
-      - DNSMASQ_LISTENING=all
+      - TZ=${PIHOLE_TZ:-IST}
+      - CUSTOM_CACHE_SIZE=${PIHOLE_CACHE_SIZE}
     volumes:
       - "${PIHOLE_VOLUME_PATH}:/etc/pihole/:rw"
       - "${PIHOLE_VOLUME_PATH}/dnsmasq.d:/etc/dnsmasq.d/:rw"
@@ -38,7 +40,6 @@ services:
     container_name: unbound
     image: mvance/unbound:1.19.3
     hostname: unbound
-    user: ${PUID}:${PGID}
     volumes:
       - "${UNBOUND_VOLUME_PATH}:/opt/unbound/etc/unbound/:rw"
     networks:

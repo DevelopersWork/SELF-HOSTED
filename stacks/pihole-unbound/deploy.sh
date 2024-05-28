@@ -27,6 +27,8 @@ update_env_file $ENV_FILE "PIHOLE_DNS_PORT" "53"
 update_env_file $ENV_FILE "PIHOLE_HTTP_WEBPORT" "1010"
 update_env_file $ENV_FILE "PIHOLE_HTTPS_WEBPORT" "4443"
 update_env_file $ENV_FILE "PIHOLE_WEBPASSWORD" "password"
+update_env_file $ENV_FILE "PIHOLE_DNSMASQ_LISTENING" "single" # <local|all|single>
+update_env_file $ENV_FILE "PIHOLE_CACHE_SIZE" "10000"
 update_env_file $ENV_FILE "PIHOLE_VOLUME_PATH" "$PIHOLE_VOLUME_PATH"
 update_env_file $ENV_FILE "PIHOLE_RESOURCES_CPUS" "0.5"
 update_env_file $ENV_FILE "PIHOLE_RESOURCES_MEMORY" "512M"
