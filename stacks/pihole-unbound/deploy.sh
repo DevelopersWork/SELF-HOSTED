@@ -8,10 +8,15 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
+# Define and Create the Pihole Unbound stack directory
 STACK_PATH="$DOCKER_STACKS_PATH/pihole-unbound"
+create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
+# Define and Create the Pihole and Unbound volume directory
 PIHOLE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/pihole"
 UNBOUND_VOLUME_PATH="$DOCKER_CONTAINER_PATH/unbound"
+create_dir_if_not_exists "$PIHOLE_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+create_dir_if_not_exists "$UNBOUND_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"

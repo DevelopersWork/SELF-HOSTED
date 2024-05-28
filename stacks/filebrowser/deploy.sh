@@ -8,8 +8,13 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
-VOLUME_PATH="$DOCKER_CONTAINER_PATH/filebrowser"
+# Define and Create the filebrowser stack directory
 STACK_PATH="$DOCKER_STACKS_PATH/filebrowser"
+create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+
+# Define and Create the filebrowser volume directory
+VOLUME_PATH="$DOCKER_CONTAINER_PATH/filebrowser"
+create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"
