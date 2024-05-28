@@ -50,7 +50,6 @@ services:
       - reverse-proxy
     deploy:
       resources:
-        resources:
         limits:
           cpus: "${MARIADB_RESOURCES_CPUS}"
           memory: "${MARIADB_RESOURCES_MEMORY}"
