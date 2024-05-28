@@ -1,5 +1,5 @@
 #!/bin/bash
-# stacks/nginx_proxy_manager-cloudflare/deploy.sh
+# stacks/nginx-proxy-manager/deploy.sh
 
 # Source the utility script
 source "$1/utils.sh"
@@ -8,9 +8,8 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
-STACK_PATH="$DOCKER_STACKS_PATH/nginx_proxy_manager-cloudflare"
+STACK_PATH="$DOCKER_STACKS_PATH/nginx_proxy_manager"
 
-CLOUDFLARED_VOLUME_PATH="$DOCKER_CONTAINER_PATH/cloudflared"
 NPM_VOLUME_PATH="$DOCKER_CONTAINER_PATH/nginx-proxy-manager"
 
 # .env file
@@ -18,10 +17,6 @@ ENV_FILE="$STACK_PATH/.env"
 create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP" 
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
-update_env_file $ENV_FILE "CLOUDFLARED_TUNNEL_TOKEN" ""
-update_env_file $ENV_FILE "CLOUDFLARED_VOLUME_PATH" "$CLOUDFLARED_VOLUME_PATH"
-update_env_file $ENV_FILE "CLOUDFLARED_RESOURCES_CPUS" "0.5"
-update_env_file $ENV_FILE "CLOUDFLARED_RESOURCES_MEMORY" "512M"
 update_env_file $ENV_FILE "NPM_HTTP_PORT" "80"
 update_env_file $ENV_FILE "NPM_HTTPS_PORT" "443"
 update_env_file $ENV_FILE "NPM_HTTP_WEBPORT" "8081"
