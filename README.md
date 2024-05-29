@@ -6,7 +6,7 @@ This repository streamlines the creation of a secure and manageable Docker-based
 
 ## Why This Setup?
 
-*   **Rootless Docker:**  Enhances security by running containers with limited privileges, preventing full root access to your system.
+*   **Rootless Docker (wherever possible):** Enhances security by running containers with limited privileges, preventing full root access to your system wherever feasible. Some containers might still require root access due to current limitations.
 *   **Portainer for Management:** Provides a powerful web-based UI for monitoring, managing, and troubleshooting your containers.
 *   **Dockge for Stacks:** Offers an intuitive interface to deploy, configure, and update Docker Compose stacks effortlessly.
 *   **Customizable Stacks:** Easily deploy pre-configured stacks or create your own to tailor the environment to your needs.
@@ -48,7 +48,15 @@ After running the setup script:
 
 ## Updates
 
-To add new stacks or update existing ones, use the `update.sh` script. You can create your own stacks by following the instructions in `stacks/README.md`. Each stack includes a `deploy.sh` script to handle setup and configuration automatically.
+To add or update **all** stacks, use the `update.sh` script:
+```bash
+sudo bash update.sh
+``` 
+To update a **specific** stack, edit the `.env` file and modify the `STACKS` variable to include only the name of the stack you want to update. For example:
+```bash
+STACKS="filebrowser"
+``` 
+After changing the `.env` file, run `update.sh` again to update only the specified stack.
 
 ## Contributing
 

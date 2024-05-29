@@ -1,0 +1,58 @@
+# stacks/nginx-proxy-manager/docker-compose.yml
+version: '3.8'
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:2.11.2
+    container_name: nginx-proxy-manager
+    hostname: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - ${NPM_HTTP_PORT:-80}:80/tcp
+      - ${NPM_HTTPS_PORT:-443}:443/tcp
+      - ${NPM_HTTP_WEBPORT:-81}:81/tcp
+    environment:
+      PGID: ${PGID}
+      DB_MYSQL_HOST: mariadb-aria-npm
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "nginx-proxy-manager"
+      DB_MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      DB_MYSQL_NAME: "nginx-proxy-manager"
+      DISABLE_IPV6: 'true'
+    volumes:
+      - "${NPM_VOLUME_PATH}/data:/data/:rw"
+      - "${NPM_VOLUME_PATH}/letsencrypt:/etc/letsencrypt/:rw"
+      - "${NPM_VOLUME_PATH}/letsencrypt/log:/tmp/letsencrypt-log/:rw"
+    depends_on:
+      - mariadb-aria
+    networks:
+      - reverse-proxy
+    deploy:
+      resources:
+        limits:
+          cpus: "${NPM_RESOURCES_CPUS}"
+          memory: "${NPM_RESOURCES_MEMORY}"
+  mariadb-aria:
+    image: jc21/mariadb-aria:latest
+    container_name: mariadb-aria-npm
+    hostname: mariadb-aria-npm
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: 'nginx-proxy-manager'
+      MYSQL_USER: 'nginx-proxy-manager'
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MARIADB_AUTO_UPGRADE: 1
+    volumes:
+      - "${NPM_VOLUME_PATH}/mysql:/var/lib/mysql:rw"
+    networks:
+      - reverse-proxy
+    deploy:
+      resources:
+        limits:
+          cpus: "${MARIADB_RESOURCES_CPUS}"
+          memory: "${MARIADB_RESOURCES_MEMORY}"
+
+networks:
+  reverse-proxy:
+    driver: bridge

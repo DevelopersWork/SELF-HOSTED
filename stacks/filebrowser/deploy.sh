@@ -8,22 +8,23 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
-VOLUME_PATH="$DOCKER_CONTAINER_PATH/filebrowser"
+# Define and Create the filebrowser stack directory
 STACK_PATH="$DOCKER_STACKS_PATH/filebrowser"
+create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+
+# Define and Create the filebrowser volume directory
+VOLUME_PATH="$DOCKER_CONTAINER_PATH/filebrowser"
+create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"
-if [[ ! -f "$ENV_FILE" ]]; then  # Check if .env file exists
-    echo "Creating .env file at $ENV_FILE..."
-    {
-        echo "PUID=$(id -u $DOCKER_USER)"
-        echo "PGID=$(getent group "$DOCKER_GROUP" | cut -d: -f3)"
-        echo "FILEBROWSER_VOLUME_PATH=$VOLUME_PATH"
-        echo "FILEBROWSER_HTTP_WEBPORT=8082"
-        echo "FILEBROWSER_RESOURCES_CPUS=0.5"
-        echo "FILEBROWSER_RESOURCES_MEMORY=512M"
-    } > "$ENV_FILE"
-fi
+create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP" 
+update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
+update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
+update_env_file $ENV_FILE "FILEBROWSER_VOLUME_PATH" "$VOLUME_PATH"
+update_env_file $ENV_FILE "FILEBROWSER_HTTP_WEBPORT" "8082"
+update_env_file $ENV_FILE "FILEBROWSER_RESOURCES_CPUS" "0.5"
+update_env_file $ENV_FILE "FILEBROWSER_RESOURCES_MEMORY" "512M"
 
 # Database File and Directory
 DATABASE_PATH="$VOLUME_PATH/database" 

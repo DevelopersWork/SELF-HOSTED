@@ -22,7 +22,7 @@ done
 
 # Run scripts 01, 02, and 03 as root
 for script in "${scripts[@]:0:3}"; do 
-  sudo /bin/bash "$SCRIPTS_PATH/$script" || { echo "Error running $script" >&2; exit 1; }
+  sudo /bin/bash "$SCRIPTS_PATH/$script" "$SCRIPTS_PATH" "$ENV_FILE" || { echo "Error running $script" >&2; exit 1; }
   echo "Script $script completed successfully."
 done
 
