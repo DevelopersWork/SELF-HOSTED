@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check if PR is to main
-        if: github.head_ref == 'main' && github.base_ref != 'alpha'
+        if: github.base_ref == 'main' && github.head_ref != 'alpha'
         run: |
-          echo "ERROR: You can only merge to main from alpha."
+          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
           exit 1
 
       - name: Check if PR is to alpha
-        if: github.head_ref == 'alpha' && github.base_ref != 'dev'
+        if: github.base_ref == 'alpha' && github.head_ref != 'develop'
         run: |
-          echo "ERROR: You can only merge to alpha from dev."
+          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
           exit 1
 
-      - name: Check if PR is to dev
-        if: github.head_ref == 'dev' 
+      - name: Check if PR is to develop
+        if: github.base_ref == 'develop' 
         run: |
-          if [[ ! "${{ github.base_ref }}" =~ ^feature/.+$ ]]; then 
-              echo "ERROR: You can only merge to dev from branches prefixed with 'feature/'."
-              exit 1
+          if [[ ! "${{ github.head_ref }}" =~ ^feature/.+$ ]]; then 
+            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
+            exit 1
           fi
