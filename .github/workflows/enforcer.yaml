@@ -1,4 +1,3 @@
-# .github/workflows/enforcer.yaml
 name: 'Pull Request Validation'
 
 on:
@@ -21,8 +20,10 @@ jobs:
           echo "ERROR: You can only merge to alpha from dev."
           exit 1
 
-      - name: Check if PR is to dev and has feature/ prefix
-        if: github.head_ref == 'dev' && !startsWith(github.base_ref, 'feature/')
+      - name: Check if PR is to dev
+        if: github.head_ref == 'dev' 
         run: |
-          echo "ERROR: You can only merge to dev from branches prefixed with 'feature/'."
-          exit 1
+          if [[ ! "${{ github.base_ref }}" =~ ^feature/.+$ ]]; then 
+              echo "ERROR: You can only merge to dev from branches prefixed with 'feature/'."
+              exit 1
+          fi
