@@ -22,6 +22,7 @@ jobs:
           exit 1
 
       - name: Check if PR is to dev
+
         if: github.base_ref == 'dev' 
         run: |
           if [[ ! "${{ github.head_ref }}" =~ ^feature/.+$ ]]; then 
