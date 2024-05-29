@@ -5,7 +5,9 @@ This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validati
 ## Stack Files
 
 - `docker-compose.yml`: Defines the Pi-hole and Unbound services, their configuration, and the network they share.
-- `deploy.sh`: Script to automatically create or update the required `.env` file for the stack.
+- `deploy.sh`: Script simplifies the deployment process by automatically:
+    -  Creating or updating the necessary `.env` file with configuration options.
+    -  Downloading the latest configuration files from the GitHub repository (if they don't already exist).
 
 ## Services
 
