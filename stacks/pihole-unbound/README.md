@@ -48,6 +48,8 @@ This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validati
 *   Change the default `PIHOLE_WEBPASSWORD` in the `deploy.sh` script before running it for security.
 *   The `dnsmasq.d` directory in the Pi-hole volume allows you to add custom DNS configurations.
 *   Consult the Pi-hole and Unbound documentation for more advanced configuration options.
+*   **Port 53:** If you encounter issues with port 53 being used by another service (e.g., `systemd-resolved` on Ubuntu), you may need to disable or reconfigure that service. [Click here](https://www.linuxuprising.com/2020/07/ubuntu-how-to-free-up-port-53-used-by.html) for solution.
+*   **File Permissions:** If you modify Unbound configuration files directly, ensure they have the correct ownership and permissions for the Docker container to access them.
 *   **Due to current limitations, the Pi-hole and Unbound runs as root within the Docker container.**
 
 ## Authors
