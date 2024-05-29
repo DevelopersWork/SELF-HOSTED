@@ -20,6 +20,7 @@ Each stack is organized in a separate subdirectory and consists of the following
 *   **`pihole-unbound/`:**  Combines Pi-hole (network-wide ad blocker) and Unbound (DNS resolver) for ad-free browsing and enhanced privacy. See `pihole-unbound/README.md`.
 *   **`cloudflared/`:** Deploys Cloudflared to create secure tunnels to your applications, exposing them to the internet without opening ports on your router. See `cloudflared/README.md`.
 *   **`nginx-proxy-manager/`:**  Sets up Nginx Proxy Manager for reverse proxying, SSL termination, and managing multiple web applications. See `nginx-proxy-manager/README.md`.
+*   **`dashy/`:** Deploys Dashy, a customizable personal dashboard to organize and access your self-hosted services and tools. See `dashy/README.md`.
 
 ## Using Stacks
 
