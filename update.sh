@@ -1,19 +1,35 @@
 #!/bin/bash
+# update.sh
 
 # Get the environment file path and exit if not provided or not a regular file
-ENV_FILE="./.env"
-[ -f "$ENV_FILE" ] || { echo "Usage: $0 <environment_file>"; exit 1; }
+ENV_FILE="./.env"  # Global .env file
 
-# Source the environment file to load variables
-source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
+# Source the environment file (exit if it fails or doesn't exist)
+source "$ENV_FILE" || {
+  echo "Error: .env file not found or failed to source." >&2
+  exit 1
+}
 
-# Ensure script is running as the 'docker' user
-if [ -z "$DOCKER_PUID" ] || [ -z "$DOCKER_GUID" ]; then
-    echo "ERROR: DOCKER_PUID or DOCKER_GUID is not set. Please check your environment variables."
-    exit 1
-elif [ "$(id -u)" -ne "$DOCKER_PUID" ] || [ "$(id -g)" -ne "$DOCKER_GUID" ]; then
-    echo "This script must be run as the 'docker' user."
-    exit 1
-fi
+SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
-# TODO
+# Array of scripts to run
+scripts=("06-setup-stacks.sh")
+
+# Create alias for running commands as the docker user
+AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
+
+# Create a temporary directory for the docker user (in /tmp for better security)
+TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary directory for the docker user in /tmp." >&2; exit 1; }
+
+# Copy the repository to the temporary directory and with owner as the docker user
+sudo cp -r "." "$TEMP_DIR/"
+sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
+
+# Run script 06 as the 'docker' user for each stack
+for stack in "${STACKS[@]}"; do  
+  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/${scripts[0]}" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running ${scripts[0]} for $stack"; exit 1; }
+done
+echo "Script ${scripts[0]} completed successfully."
+
+# Clean up - remove the temporary directory
+sudo rm -rf "$TEMP_DIR"

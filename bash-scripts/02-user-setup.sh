@@ -1,17 +1,15 @@
 #!/bin/bash
+# bash-scripts/02-user-setup.sh
+
+# Source the utility script
+source "$1/utils.sh" 
 
 # Get the environment file path and exit if not provided or not a regular file
-ENV_FILE="$1"
-[ -f "$ENV_FILE" ] || { echo "Usage: $0 <environment_file>"; exit 1; }
-
 # Source the environment file to load variables
-source "$ENV_FILE" || { echo "Failed to source environment file."; exit 1; }
+load_config "$2"
 
-# Ensure script is running as root (or with sudo)
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script requires root privileges. Please run with sudo."
-    exit 1
-fi
+# Ensure script is running as root user (or with sudo)
+check_user 0
 
 # Check if docker group exists and create if needed
 if ! getent group "$DOCKER_GROUP" &> /dev/null; then
@@ -25,10 +23,6 @@ if ! getent passwd "$DOCKER_USER" &> /dev/null; then
     useradd -M -d "$DOCKER_PATH" -s /usr/sbin/nologin -r -g "$DOCKER_GROUP" "$DOCKER_USER" || {
         echo "Failed to create docker user."; exit 1; 
     }
-
-    # Create the base Docker directory and set permissions
-    mkdir -p "$DOCKER_PATH"
-    chown "$DOCKER_USER":"$DOCKER_GROUP" "$DOCKER_PATH"
 fi
 
 # Ensure the docker user is in the docker group
@@ -36,6 +30,3 @@ if ! id -nG "$DOCKER_USER" | grep -qw "$DOCKER_GROUP"; then
     echo "Adding $DOCKER_USER to $DOCKER_GROUP..."
     usermod -aG "$DOCKER_GROUP" "$DOCKER_USER" || { echo "Failed to add user to group."; exit 1; }
 fi
-
-echo "Docker User ID: $DOCKER_PUID"
-echo "Docker Group ID: $DOCKER_GUID"

@@ -1,0 +1,21 @@
+# stacks/cloudflared/docker-compose.yml
+version: '3.8'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2024.5.0
+    container_name: cloudflared
+    hostname: cloudflared
+    user: ${PUID}:${PGID}
+    restart: unless-stopped
+    environment:
+      TUNNEL_TOKEN: "${CLOUDFLARED_TUNNEL_TOKEN}"
+    command: tunnel --no-autoupdate run
+    volumes:
+      - "${CLOUDFLARED_VOLUME_PATH}:/etc/cloudflared/:rw"
+    network_mode: bridge
+    deploy:
+      resources:
+        limits:
+          cpus: "${CLOUDFLARED_RESOURCES_CPUS}"
+          memory: "${CLOUDFLARED_RESOURCES_MEMORY}"
