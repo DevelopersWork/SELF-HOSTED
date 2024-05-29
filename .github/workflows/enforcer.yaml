@@ -16,14 +16,13 @@ jobs:
           exit 1
 
       - name: Check if PR is to alpha
-        if: github.base_ref == 'alpha' && github.head_ref != 'dev'
+        if: github.base_ref == 'alpha' && github.head_ref != 'develop'
         run: |
           echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
           exit 1
 
-      - name: Check if PR is to dev
-
-        if: github.base_ref == 'dev' 
+      - name: Check if PR is to develop
+        if: github.base_ref == 'develop' 
         run: |
           if [[ ! "${{ github.head_ref }}" =~ ^feature/.+$ ]]; then 
             echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
