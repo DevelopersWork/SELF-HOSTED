@@ -1,0 +1,9 @@
+Current Homelab Observations:
+- pihole-unbound stack
+1. Some systems(for eg. Ubuntu Server) uses port 53 in order provide the internet access. I've following solution inorder free the port 53 and use it for pihole service. Reference: https://www.linuxuprising.com/2020/07/ubuntu-how-to-free-up-port-53-used-by.html
+2. Some of the files created like unbound.conf is owned by the root since created by the container. These files cannot be edited in the filebrowser, might need to connect to the system via something like ssh inorder to perform any configurations to these type of files
+
+
+
+FreshRSS
+Check Containers from lissy93
