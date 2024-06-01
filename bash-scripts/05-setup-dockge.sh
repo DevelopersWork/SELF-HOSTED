@@ -38,6 +38,6 @@ docker run -d \
     -v "$DOCKGE_VOLUME_PATH:/app/data/:rw" \
     --name dockge \
     --restart unless-stopped \
-    --cpus="0.2" \
+    --cpus="0.3" \
     --memory="256m" \
     louislam/dockge:1.4.2 || { echo "Failed to start Dockge container."; exit 1; }
