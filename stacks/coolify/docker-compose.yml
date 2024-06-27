@@ -25,7 +25,7 @@ services:
           cpus: "${COOLIFY_RESOURCES_CPUS}"
           memory: "${COOLIFY_RESOURCES_MEMORY}"
     environment:
-      - PHP_MEMORY_LIMIT
+      - PHP_MEMORY_LIMIT=${COOLIFY_RESOURCES_MEMORY}
       - APP_ID
       - APP_ENV=production
       - APP_DEBUG
