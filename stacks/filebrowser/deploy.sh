@@ -24,7 +24,7 @@ update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "FILEBROWSER_VOLUME_PATH" "$VOLUME_PATH"
 update_env_file $ENV_FILE "FILEBROWSER_HTTP_WEBPORT" "8082"
 update_env_file $ENV_FILE "FILEBROWSER_RESOURCES_CPUS" "0.5"
-update_env_file $ENV_FILE "FILEBROWSER_RESOURCES_MEMORY" "512M"
+update_env_file $ENV_FILE "FILEBROWSER_RESOURCES_MEMORY" "256M"
 
 # Database File and Directory
 DATABASE_PATH="$VOLUME_PATH/database" 

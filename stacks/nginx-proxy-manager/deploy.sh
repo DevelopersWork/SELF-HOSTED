@@ -30,7 +30,7 @@ update_env_file $ENV_FILE "NPM_RESOURCES_MEMORY" "512M"
 update_env_file $ENV_FILE "MYSQL_ROOT_PASSWORD" "MYSQL_ROOT_PASSWORD"
 update_env_file $ENV_FILE "MYSQL_PASSWORD" "MYSQL_PASSWORD"
 update_env_file $ENV_FILE "MARIADB_RESOURCES_CPUS" "0.5"
-update_env_file $ENV_FILE "MARIADB_RESOURCES_MEMORY" "512M"
+update_env_file $ENV_FILE "MARIADB_RESOURCES_MEMORY" "256M"
 
 create_dir_if_not_exists "$VOLUME_PATH/data" "$DOCKER_USER" "$DOCKER_GROUP"
 create_dir_if_not_exists "$VOLUME_PATH/letsencrypt/log" "$DOCKER_USER" "$DOCKER_GROUP"

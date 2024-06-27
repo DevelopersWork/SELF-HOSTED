@@ -37,6 +37,6 @@ docker run -d \
     -v "$PORTAINER_VOLUME_PATH:/data" \
     --name portainer \
     --restart unless-stopped \
-    --cpus="0.3" \
+    --cpus="0.5" \
     --memory="256m" \
     portainer/portainer-ce:2.20.3 || { echo "Failed to start Portainer container."; exit 1; }
