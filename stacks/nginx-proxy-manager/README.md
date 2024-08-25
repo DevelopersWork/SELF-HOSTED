@@ -16,8 +16,8 @@ This stack deploys Nginx Proxy Manager (NPM), a powerful and user-friendly web i
 
 **Nginx Proxy Manager:**
 
-- **`PUID`**: User ID (UID) for running the container (automatically set in the `deploy.sh` script).
-- **`PGID`**: Group ID (GID) for running the container (automatically set in the `deploy.sh` script).
+- **`PUID`**: User ID (UID) for running the container.
+- **`PGID`**: Group ID (GID) for running the container.
 - **`NPM_HTTP_PORT`:** Port for HTTP traffic (default: `80`).
 - **`NPM_HTTPS_PORT`:** Port for HTTPS traffic (default: `443`).
 - **`NPM_HTTP_WEBPORT`:** Port for the Nginx Proxy Manager web interface (default: `8081`).

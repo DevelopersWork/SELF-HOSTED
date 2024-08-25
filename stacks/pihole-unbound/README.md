@@ -16,8 +16,8 @@ This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validati
 
 ## Environment Variables
 
-- **`PUID`:** User ID (UID) for running the containers (automatically set by `deploy.sh`).
-- **`PGID`:** Group ID (GID) for running the containers (automatically set by `deploy.sh`).
+- **`PUID`:** User ID (UID) for running the containers.
+- **`PGID`:** Group ID (GID) for running the containers.
 - **`PIHOLE_DNS_PORT`:** Port for DNS traffic (default: `53`).
 - **`PIHOLE_HTTP_WEBPORT`:** Port for Pi-hole web interface (default: `1010`).
 - **`PIHOLE_HTTPS_WEBPORT`:** Port for Pi-hole web interface over HTTPS (default: `4443`).

@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
   nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:2.11.2
+    image: jc21/nginx-proxy-manager:2.11.3
     container_name: nginx-proxy-manager
     hostname: nginx-proxy-manager
     restart: unless-stopped
@@ -44,7 +44,7 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MARIADB_AUTO_UPGRADE: 1
     volumes:
-      - "${NPM_VOLUME_PATH}/mysql:/var/lib/mysql:rw"
+      - "${NPM_VOLUME_PATH}/db:/var/lib/mysql:rw"
     networks:
       - reverse-proxy
     deploy:

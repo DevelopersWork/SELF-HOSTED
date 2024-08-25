@@ -14,8 +14,8 @@ This stack deploys Cloudflared, enabling secure access to your applications or s
 
 ## Environment Variables
 
-- **`PUID`**: User ID (UID) for running the container (automatically set in the `deploy.sh` script).
-- **`PGID`**: Group ID (GID) for running the container (automatically set in the `deploy.sh` script).
+- **`PUID`**: User ID (UID) for running the container.
+- **`PGID`**: Group ID (GID) for running the container.
 - **`CLOUDFLARED_TUNNEL_TOKEN`**: **(Required)** Your Cloudflare Tunnel token (obtain it from your Cloudflare account).
 - **`CLOUDFLARED_VOLUME_PATH`**: Path to the Cloudflared data volume (defaults to `/home/docker/containers/cloudflared`).
 - **`CLOUDFLARED_RESOURCES_CPUS`**: CPU cores allocated to Cloudflared (default: `0.5`).
