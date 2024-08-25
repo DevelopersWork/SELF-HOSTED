@@ -4,7 +4,7 @@ version: '3.8'
 services:
   pihole:
     container_name: pihole
-    image: pihole/pihole:2024.05.0
+    image: pihole/pihole:2024.07.0
     hostname: pihole
     ports:
       - ${PIHOLE_DNS_PORT:-53}:53/tcp
@@ -38,7 +38,7 @@ services:
           memory: "${PIHOLE_RESOURCES_MEMORY}"
   unbound:
     container_name: unbound
-    image: mvance/unbound:1.19.3
+    image: mvance/unbound:1.20.0
     hostname: unbound
     volumes:
       - "${UNBOUND_VOLUME_PATH}/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:r"
