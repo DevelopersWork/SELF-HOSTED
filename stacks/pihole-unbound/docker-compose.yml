@@ -41,7 +41,9 @@ services:
     image: mvance/unbound:1.19.3
     hostname: unbound
     volumes:
-      - "${UNBOUND_VOLUME_PATH}:/opt/unbound/etc/unbound/:rw"
+      - "${UNBOUND_VOLUME_PATH}/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:r"
+      - "${UNBOUND_VOLUME_PATH}/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:r"
+      - "${UNBOUND_VOLUME_PATH}/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:r"
     networks:
       - dns
     restart: unless-stopped
