@@ -1,0 +1,26 @@
+# stacks/squid/docker-compose.yml
+version: '3.8'
+
+services:
+  squid:
+    container_name: squid
+    image: ubuntu/squid:${SQUID_DOCKER_TAG}
+    hostname: squid
+    ports:
+      - ${SQUID_PROXY_PORT:-3128}:3128/tcp
+      - ${SQUID_PROXY_PORT:-3128}:3128/udp
+    user: ${PUID}:${PGID}
+    environment:
+      - TZ=${SQUID_TZ:-IST}
+    volumes:
+      - "${SQUID_VOLUME_PATH}/squid.conf:/etc/squid/squid.conf:r"
+      # - "${SQUID_VOLUME_PATH}/snippet.conf:/etc/squid/conf.d/snippet.conf:r" # Enable this if you have file placed in the path
+      - "${SQUID_VOLUME_PATH}/logs:/var/log/squid/:rw"
+      - "${SQUID_VOLUME_PATH}/cache:/var/spool/squid/:rw"
+    restart: unless-stopped
+    network_mode: bridge
+    deploy:
+      resources:
+        limits:
+          cpus: "${SQUID_RESOURCES_CPUS}"
+          memory: "${SQUID_RESOURCES_MEMORY}"
