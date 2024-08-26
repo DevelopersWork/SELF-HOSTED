@@ -9,6 +9,7 @@ services:
     ports:
       - ${SQUID_PROXY_PORT:-3128}:3128/tcp
       - ${SQUID_PROXY_PORT:-3128}:3128/udp
+    user: ${PUID}:${PGID}
     environment:
       - TZ=${SQUID_TZ:-IST}
     volumes:
