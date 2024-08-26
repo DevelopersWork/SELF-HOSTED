@@ -40,6 +40,9 @@ services:
     container_name: unbound
     image: mvance/unbound:1.20.0
     hostname: unbound
+    ports:
+      - ${UNBOUND_DNS_PORT:-5353}:53/tcp
+      - ${UNBOUND_DNS_PORT:-5353}:53/udp
     volumes:
       - "${UNBOUND_VOLUME_PATH}/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:r"
       - "${UNBOUND_VOLUME_PATH}/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:r"
