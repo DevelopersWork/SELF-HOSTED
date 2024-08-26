@@ -33,7 +33,7 @@ for file in "squid.conf"; do
     config_file="$SQUID_VOLUME_PATH/$file"
     if [[ ! -f "$config_file" ]]; then
         echo "Downloading Squid configuration file: $file"
-        wget -q -O "$config_file" "$SQUID_CONFIG_URL/$file?h=6.6-24.04_beta" || {
+        wget -q -O "$config_file" "$SQUID_CONFIG_URL/$file?h=6.6-24.04" || {
             echo "Failed to download Squid configuration: $file" >&2
             exit 1
         }
