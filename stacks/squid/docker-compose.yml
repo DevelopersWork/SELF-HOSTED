@@ -4,7 +4,7 @@ version: '3.8'
 services:
   squid:
     container_name: squid
-    image: ubuntu/squid:${SQUID_DOCKER_TAG}
+    image: ubuntu/squid:6.6-24.04_beta
     hostname: squid
     ports:
       - ${SQUID_PROXY_PORT:-3128}:3128/tcp
