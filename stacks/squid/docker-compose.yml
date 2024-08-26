@@ -13,8 +13,10 @@ services:
     environment:
       - TZ=${SQUID_TZ:-IST}
     volumes:
-      - "${SQUID_VOLUME_PATH}/squid.conf:/etc/squid/squid.conf:r"
-      # - "${SQUID_VOLUME_PATH}/snippet.conf:/etc/squid/conf.d/snippet.conf:r" # Enable this if you have file placed in the path
+      - "/etc/hosts:/etc/hosts:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "${SQUID_VOLUME_PATH}/squid.conf:/etc/squid/squid.conf:ro"
+      # - "${SQUID_VOLUME_PATH}/snippet.conf:/etc/squid/conf.d/snippet.conf:ro" # Enable this if you have file placed in the path
       - "${SQUID_VOLUME_PATH}/log:/var/log/squid/:rw"
       - "${SQUID_VOLUME_PATH}/cache:/var/spool/squid/:rw"
     restart: unless-stopped
