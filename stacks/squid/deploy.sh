@@ -15,8 +15,8 @@ STACK_PATH="$DOCKER_STACKS_PATH/squid"
 create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Define and Create the Squid volume directory
-SQUID_VOLUME_PATH="$DOCKER_CONTAINER_PATH/squid"
-create_dir_if_not_exists "$SQUID_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+VOLUME_PATH="$DOCKER_CONTAINER_PATH/squid"
+create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"
@@ -24,13 +24,16 @@ create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "SQUID_PROXY_PORT" "3128"
-update_env_file $ENV_FILE "SQUID_VOLUME_PATH" "$SQUID_VOLUME_PATH"
+update_env_file $ENV_FILE "SQUID_VOLUME_PATH" "$VOLUME_PATH"
 update_env_file $ENV_FILE "SQUID_RESOURCES_CPUS" "0.5"
 update_env_file $ENV_FILE "SQUID_RESOURCES_MEMORY" "256M"
 
+create_dir_if_not_exists "$VOLUME_PATH/log" "$DOCKER_USER" "$DOCKER_GROUP"
+create_dir_if_not_exists "$VOLUME_PATH/cache" "$DOCKER_USER" "$DOCKER_GROUP"
+
 # Download Squid Configuration Files
 for file in "squid.conf"; do
-    config_file="$SQUID_VOLUME_PATH/$file"
+    config_file="$VOLUME_PATH/$file"
     if [[ ! -f "$config_file" ]]; then
         echo "Downloading Squid configuration file: $file"
         wget -q -O "$config_file" "$SQUID_CONFIG_URL/$file?h=6.6-24.04" || {
