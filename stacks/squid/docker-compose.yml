@@ -11,9 +11,10 @@ services:
       - ${SQUID_PROXY_PORT:-3128}:3128/udp
     user: ${PUID}:${PGID}
     environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
       - TZ=${SQUID_TZ:-IST}
     volumes:
-      - "/etc/hosts:/etc/hosts:ro"
       - "/etc/localtime:/etc/localtime:ro"
       - "${SQUID_VOLUME_PATH}/squid.conf:/etc/squid/squid.conf:ro"
       # - "${SQUID_VOLUME_PATH}/snippet.conf:/etc/squid/conf.d/snippet.conf:ro" # Enable this if you have file placed in the path

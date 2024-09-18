@@ -29,7 +29,7 @@ create_dir_if_not_exists "$PORTAINER_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 remove_containers_with_image_base "portainer/portainer-ce"
 
 # Run Portainer Container (with explicit image tag)
-echo "Running Portainer container (version 2.20.3)..."
+echo "Running Portainer container (version 2.21.0)..."
 docker run -d \
     -u "$DOCKER_PUID:$DOCKER_GUID" \
     -p 9000:9000 \
@@ -39,4 +39,4 @@ docker run -d \
     --restart unless-stopped \
     --cpus="0.5" \
     --memory="256m" \
-    portainer/portainer-ce:2.20.3 || { echo "Failed to start Portainer container."; exit 1; }
+    portainer/portainer-ce:2.21.0 || { echo "Failed to start Portainer container."; exit 1; }

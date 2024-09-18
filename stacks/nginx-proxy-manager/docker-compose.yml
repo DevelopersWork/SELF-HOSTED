@@ -52,6 +52,8 @@ services:
         limits:
           cpus: "${MARIADB_RESOURCES_CPUS}"
           memory: "${MARIADB_RESOURCES_MEMORY}"
+    profiles:
+      - mariadb-aria
 
 networks:
   reverse-proxy:
