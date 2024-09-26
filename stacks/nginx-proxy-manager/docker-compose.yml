@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
   nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:v3
+    image: jc21/nginx-proxy-manager:2.11.3
     container_name: nginx-proxy-manager
     hostname: nginx-proxy-manager
     ports:
@@ -36,10 +36,10 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: 0.5
-          memory: 512M
+          cpus: '0.5'
+          memory: '512M'
   mariadb-aria:
-    image: jc21/mariadb-aria:latest
+    image: jc21/mariadb-aria:10.11.5
     container_name: mariadb-aria-npm
     hostname: mariadb-aria-npm
     environment:
@@ -60,8 +60,8 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: 0.5
-          memory: 512M
+          cpus: '0.5'
+          memory: '512M'
     profiles:
       - mariadb # Define a profile to control startup
 
