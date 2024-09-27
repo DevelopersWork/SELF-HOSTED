@@ -1,5 +1,5 @@
 # stacks/pihole-unbound/docker-compose.yml
-version: '3.8'
+version: '3.9'
 
 services:
   pihole:
@@ -7,55 +7,64 @@ services:
     image: pihole/pihole:2024.07.0
     hostname: pihole
     ports:
-      - ${PIHOLE_DNS_PORT:-53}:53/tcp
-      - ${PIHOLE_DNS_PORT:-53}:53/udp
-      - ${PIHOLE_HTTP_WEBPORT:-80}:80/tcp
-      - ${PIHOLE_HTTPS_WEBPORT:-443}:443/tcp
+      - 53:53
+      - 1010:80
     environment:
       - PIHOLE_UID=${PUID}
       - PIHOLE_GID=${PGID}
-      - PIHOLE_DNS_=unbound
-      - IPv6=false
-      - DNSMASQ_LISTENING=${PIHOLE_DNSMASQ_LISTENING}
-      - DNS_BOGUS_PRIV=true
-      - DNS_FQDN_REQUIRED=true
       - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
-      - WEBTHEME=high-contrast-dark
+      - DNSMASQ_LISTENING=${PIHOLE_DNSMASQ_LISTENING}
       - TZ=${PIHOLE_TZ:-IST}
       - CUSTOM_CACHE_SIZE=${PIHOLE_CACHE_SIZE}
+      - IPv6=false
+      - PIHOLE_DNS_=unbound
+      - DNS_BOGUS_PRIV=true
+      - DNS_FQDN_REQUIRED=true
+      - WEBTHEME=high-contrast-dark
     volumes:
       - "${PIHOLE_VOLUME_PATH}:/etc/pihole/:rw"
       - "${PIHOLE_VOLUME_PATH}/dnsmasq.d:/etc/dnsmasq.d/:rw"
     networks:
-      - dns
+      - domain-name-server
     restart: unless-stopped
     depends_on:
       - unbound
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       resources:
         limits:
-          cpus: "${PIHOLE_RESOURCES_CPUS}"
-          memory: "${PIHOLE_RESOURCES_MEMORY}"
+          cpus: '0.5'
+          memory: '512M'
   unbound:
     container_name: unbound
     image: mvance/unbound:1.20.0
     hostname: unbound
-    ports:
-      - ${UNBOUND_DNS_PORT:-5353}:53/tcp
-      - ${UNBOUND_DNS_PORT:-5353}:53/udp
     volumes:
       - "${UNBOUND_VOLUME_PATH}/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro"
       - "${UNBOUND_VOLUME_PATH}/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro"
       - "${UNBOUND_VOLUME_PATH}/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro"
     networks:
-      - dns
+      - domain-name-server
     restart: unless-stopped
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       resources:
         limits:
-          cpus: "${UNBOUND_RESOURCES_CPUS}"
-          memory: "${UNBOUND_RESOURCES_MEMORY}"
+          cpus: '0.5'
+          memory: '512M'
 
 networks:
-  dns:
+  domain-name-server:
+    name: "domain-name-server"
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.53.0/24
+    external: false

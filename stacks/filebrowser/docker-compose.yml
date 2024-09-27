@@ -7,7 +7,7 @@ services:
     image: filebrowser/filebrowser:v2.30.0
     hostname: filebrowser
     ports:
-      - ${FILEBROWSER_HTTP_WEBPORT:-80}:80/tcp
+      - 8082:80
     user: ${PUID}:${PGID}
     environment:
       - PUID=${PUID}
@@ -15,10 +15,14 @@ services:
     volumes:
       - "${FILEBROWSER_VOLUME_PATH}/database/filebrowser.db:/database.db:rw"
       - "${MOUNT_PATH:-/}:/srv/:rw"
-    restart: unless-stopped
     network_mode: bridge
+    restart: unless-stopped
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       resources:
         limits:
-          cpus: "${FILEBROWSER_RESOURCES_CPUS}"
-          memory: "${FILEBROWSER_RESOURCES_MEMORY}"
+          cpus: '0.5'
+          memory: '512M'

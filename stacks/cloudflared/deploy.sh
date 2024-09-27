@@ -26,6 +26,3 @@ update_env_file "$ENV_FILE" "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 # Append the rest of the variables if they don't exist
 update_env_file "$ENV_FILE" "CLOUDFLARED_TUNNEL_TOKEN" ""
 update_env_file "$ENV_FILE" "CLOUDFLARED_VOLUME_PATH" "$VOLUME_PATH"
-update_env_file "$ENV_FILE" "CLOUDFLARED_RESOURCES_CPUS" "0.5"
-update_env_file "$ENV_FILE" "CLOUDFLARED_RESOURCES_MEMORY" "256M"
-# (Add other environment variables here as needed)

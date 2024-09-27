@@ -25,19 +25,11 @@ ENV_FILE="$STACK_PATH/.env"
 create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP" 
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
-update_env_file $ENV_FILE "PIHOLE_DNS_PORT" "53"
-update_env_file $ENV_FILE "PIHOLE_HTTP_WEBPORT" "1010"
-update_env_file $ENV_FILE "PIHOLE_HTTPS_WEBPORT" "4443"
 update_env_file $ENV_FILE "PIHOLE_WEBPASSWORD" "password"
 update_env_file $ENV_FILE "PIHOLE_DNSMASQ_LISTENING" "single" # <local|all|single>
-update_env_file $ENV_FILE "PIHOLE_CACHE_SIZE" "10000"
+update_env_file $ENV_FILE "PIHOLE_CACHE_SIZE" "50000"
 update_env_file $ENV_FILE "PIHOLE_VOLUME_PATH" "$PIHOLE_VOLUME_PATH"
-update_env_file $ENV_FILE "PIHOLE_RESOURCES_CPUS" "0.5"
-update_env_file $ENV_FILE "PIHOLE_RESOURCES_MEMORY" "256M"
-update_env_file $ENV_FILE "UNBOUND_DNS_PORT" "5353"
 update_env_file $ENV_FILE "UNBOUND_VOLUME_PATH" "$UNBOUND_VOLUME_PATH"
-update_env_file $ENV_FILE "UNBOUND_RESOURCES_CPUS" "0.5"
-update_env_file $ENV_FILE "UNBOUND_RESOURCES_MEMORY" "256M"
 
 # Download Unbound Configuration Files
 for file in "forward-records.conf" "a-records.conf" "srv-records.conf"; do
