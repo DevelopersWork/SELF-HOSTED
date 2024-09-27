@@ -47,7 +47,6 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MARIADB_AUTO_UPGRADE=0
     volumes:
       - "${NPM_VOLUME_PATH}/mysql:/var/lib/mysql:rw"
     networks:
@@ -68,3 +67,6 @@ services:
 networks:
   reverse-proxy:
     driver: bridge
+    config:
+      - subnet: "172.18.80.0/24"
+    external: false
