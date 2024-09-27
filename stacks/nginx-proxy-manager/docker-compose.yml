@@ -1,5 +1,5 @@
 # stacks/nginx-proxy-manager/docker-compose.yml
-version: '3.8'
+version: '3.9'
 
 services:
   nginx-proxy-manager:
@@ -47,6 +47,7 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MARIADB_AUTO_UPGRADE=0
     volumes:
       - "${NPM_VOLUME_PATH}/mysql:/var/lib/mysql:rw"
     networks:
@@ -66,7 +67,10 @@ services:
 
 networks:
   reverse-proxy:
+    name: "reverse-proxy"
     driver: bridge
-    config:
-      - subnet: "172.18.80.0/24"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.80.0/24
     external: false
