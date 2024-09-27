@@ -73,5 +73,4 @@ networks:
       driver: default
       config:
         - subnet: 172.22.80.0/24
-          gateway: 172.22.80.1
     external: false
