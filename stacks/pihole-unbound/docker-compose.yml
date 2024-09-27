@@ -67,7 +67,7 @@ services:
 
 networks:
   domain-name-server:
-    name: "domain-name-server"
+    name: "dns"
     driver: bridge
     ipam:
       driver: default
