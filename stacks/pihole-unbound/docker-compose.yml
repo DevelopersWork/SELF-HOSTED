@@ -3,9 +3,11 @@ version: '3.9'
 
 services:
   pihole:
-    container_name: pihole
     image: pihole/pihole:2024.07.0
+    container_name: pihole
     hostname: pihole
+    depends_on:
+      - unbound
     ports:
       - 53:53
       - 1010:80
@@ -27,8 +29,6 @@ services:
     networks:
       - domain-name-server
     restart: unless-stopped
-    depends_on:
-      - unbound
     deploy:
       restart_policy:
         condition: on-failure
@@ -36,8 +36,11 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: '0.5'
-          memory: '512M'
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '64M'
   unbound:
     container_name: unbound
     image: mvance/unbound:1.20.0
@@ -56,8 +59,11 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: '0.5'
-          memory: '512M'
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '64M'
 
 networks:
   domain-name-server:
