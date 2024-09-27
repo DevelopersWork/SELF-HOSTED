@@ -4,7 +4,7 @@ version: "3.8"
 services:
   filebrowser:
     container_name: filebrowser
-    image: filebrowser/filebrowser:v2.30.0
+    image: filebrowser/filebrowser:v2.31.1
     hostname: filebrowser
     ports:
       - 8082:80
@@ -24,5 +24,8 @@ services:
         max_attempts: 3
       resources:
         limits:
-          cpus: '0.5'
-          memory: '512M'
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '64M'
