@@ -37,9 +37,9 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: '512M'
+          memory: '1024M'
         reservations:
-          cpus: '0.05'
+          cpus: '0.01'
           memory: '256M'
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost/admin/" ]
@@ -68,7 +68,7 @@ services:
           cpus: '0.5'
           memory: '256M'
         reservations:
-          cpus: '0.05'
+          cpus: '0.01'
           memory: '32M'
     healthcheck:
       test: [ "CMD", "unbound-host", "-C", "/opt/unbound/etc/unbound/unbound.conf", "example.com" ]
