@@ -9,6 +9,7 @@ services:
     user: ${PUID}:${PGID}
     environment:
       TUNNEL_TOKEN: "${CLOUDFLARED_TUNNEL_TOKEN}"
+      TUNNEL_METRICS: "${CLOUDFLARED_TUNNEL_METRICS}"
     command: tunnel --no-autoupdate run
     volumes:
       - "${CLOUDFLARED_VOLUME_PATH}:/etc/cloudflared/:rw"
@@ -27,7 +28,7 @@ services:
           cpus: '0.01'
           memory: '32M'
     healthcheck:
-      test: [ "CMD", "cloudflared", "tunnel", "list", "--output", "json" ]
+      test: [ "CMD", "curl", "-f", "http://${CLOUDFLARED_TUNNEL_METRICS}/metrics" ]
       interval: 60s
       timeout: 10s
       retries: 3

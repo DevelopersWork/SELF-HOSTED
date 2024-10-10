@@ -22,7 +22,6 @@ create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
 # Overwrite PUID and PGID to ensure they are always up-to-date
 update_env_file "$ENV_FILE" "PUID" "$(id -u $DOCKER_USER)"
 update_env_file "$ENV_FILE" "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
-
-# Append the rest of the variables if they don't exist
 update_env_file "$ENV_FILE" "CLOUDFLARED_TUNNEL_TOKEN" ""
+update_env_file "$ENV_FILE" "CLOUDFLARED_TUNNEL_METRICS" "localhost:60123"
 update_env_file "$ENV_FILE" "CLOUDFLARED_VOLUME_PATH" "$VOLUME_PATH"
