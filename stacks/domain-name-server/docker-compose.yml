@@ -23,10 +23,10 @@ services:
       - CUSTOM_CACHE_SIZE=10000
     volumes:
       - type: volume
-        source: dns
+        source: pihole
         target: "/etc/pihole"
       - type: volume
-        source: dns
+        source: pihole
         target: "/etc/dnsmasq.d"
     depends_on:
       - unbound
@@ -55,7 +55,7 @@ services:
     image: mvance/unbound:1.21.1
     volumes:
       - type: volume
-        source: dns
+        source: unbound
         target: "/opt/unbound/etc/unbound"
       # enable below accordingly
       # - type: bind
@@ -107,10 +107,17 @@ networks:
     external: false
 
 volumes:
-  dns:
-    name: "domain-name-server"
+  pihole:
+    name: "dns-pihole"
     driver: local
     driver_opts:
       type: none
-      device: "$VOLUME_PATH"
+      device: "$PIHOLE_VOLUME_PATH"
+      o: bind
+  unbound:
+    name: "dns-unbound"
+    driver: local
+    driver_opts:
+      type: none
+      device: "$UNBOUND_VOLUME_PATH"
       o: bind

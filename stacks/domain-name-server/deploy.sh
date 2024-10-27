@@ -16,9 +16,8 @@ create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Define and Create the Pihole and Unbound volume directory
 VOLUME_PATH="$DOCKER_VOLUME_PATH/domain-name-server"
-PIHOLE_VOLUME_PATH="$DOCKER_CONTAINER_PATH/pihole"
-UNBOUND_VOLUME_PATH="$DOCKER_CONTAINER_PATH/unbound"
-create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+PIHOLE_VOLUME_PATH="$VOLUME_PATH/pihole"
+UNBOUND_VOLUME_PATH="$VOLUME_PATH/unbound"
 create_dir_if_not_exists "$PIHOLE_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 create_dir_if_not_exists "$UNBOUND_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
@@ -28,7 +27,6 @@ create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "PIHOLE_WEBPASSWORD" "password"
-update_env_file $ENV_FILE "VOLUME_PATH" "$VOLUME_PATH"
 update_env_file $ENV_FILE "PIHOLE_VOLUME_PATH" "$PIHOLE_VOLUME_PATH"
 update_env_file $ENV_FILE "UNBOUND_VOLUME_PATH" "$UNBOUND_VOLUME_PATH"
 
