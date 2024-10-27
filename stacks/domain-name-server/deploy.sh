@@ -19,6 +19,7 @@ VOLUME_PATH="$DOCKER_VOLUME_PATH/domain-name-server"
 PIHOLE_VOLUME_PATH="$VOLUME_PATH/pihole"
 UNBOUND_VOLUME_PATH="$VOLUME_PATH/unbound"
 create_dir_if_not_exists "$PIHOLE_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+create_dir_if_not_exists "$PIHOLE_VOLUME_PATH/dnsmasq.d" "$DOCKER_USER" "$DOCKER_GROUP"
 create_dir_if_not_exists "$UNBOUND_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file

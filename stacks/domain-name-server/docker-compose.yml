@@ -26,7 +26,7 @@ services:
         source: pihole
         target: "/etc/pihole"
       - type: volume
-        source: pihole
+        source: dnsmasq-d
         target: "/etc/dnsmasq.d"
     depends_on:
       - unbound
@@ -57,23 +57,6 @@ services:
       - type: volume
         source: unbound
         target: "/opt/unbound/etc/unbound"
-      # enable below accordingly
-      # - type: bind
-      #   source: "${UNBOUND_VOLUME_PATH}/forward-records.conf"
-      #   target: "/opt/unbound/etc/unbound/forward-records.conf"
-      #   read_only: true
-      # - type: bind
-      #   source: "${UNBOUND_VOLUME_PATH}/a-records.conf"
-      #   target: "/opt/unbound/etc/unbound/a-records.conf"
-      #   read_only: true
-      # - type: bind
-      #   source: "${UNBOUND_VOLUME_PATH}/srv-records.conf"
-      #   target: "/opt/unbound/etc/unbound/srv-records.conf"
-      #   read_only: true
-      # - type: bind
-      #   source: "${UNBOUND_VOLUME_PATH}/unbound.conf"
-      #   target: "/opt/unbound/etc/unbound/unbound.conf"
-      #   read_only: true
     networks:
       - dns
     restart: unless-stopped
@@ -113,6 +96,13 @@ volumes:
     driver_opts:
       type: none
       device: "$PIHOLE_VOLUME_PATH"
+      o: bind
+  dnsmasq-d:
+    name: "dns-pihole-dnsmasq-d"
+    driver: local
+    driver_opts:
+      type: none
+      device: "$PIHOLE_VOLUME_PATH/dnsmasq.d"
       o: bind
   unbound:
     name: "dns-unbound"
