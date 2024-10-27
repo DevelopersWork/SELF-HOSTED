@@ -10,22 +10,24 @@ services:
     environment:
       - PIHOLE_UID=${PUID}
       - PIHOLE_GID=${PGID}
+      - WEB_UID=${PUID}
+      - WEB_GID=${PGID}
       - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
-      - DNSMASQ_LISTENING=single # local|all|single
       - TZ=IST
-      - CUSTOM_CACHE_SIZE=10000
-      - IPv6=false
       - PIHOLE_DNS_=unbound
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
+      - IPv6=false
       - WEBTHEME=high-contrast-dark
+      - DNSMASQ_LISTENING=single # local|all|single
+      - CUSTOM_CACHE_SIZE=10000
     volumes:
       - type: volume
         source: dns
-        target: "/etc/pihole/"
+        target: "/etc/pihole"
       - type: volume
         source: dns
-        target: "/etc/dnsmasq.d/"
+        target: "/etc/dnsmasq.d"
     depends_on:
       - unbound
     networks:
@@ -52,22 +54,26 @@ services:
   unbound:
     image: mvance/unbound:1.21.1
     volumes:
-      - type: bind
-        source: "${UNBOUND_VOLUME_PATH}/forward-records.conf"
-        target: "/opt/unbound/etc/unbound/forward-records.conf"
-        read_only: true
-      - type: bind
-        source: "${UNBOUND_VOLUME_PATH}/a-records.conf"
-        target: "/opt/unbound/etc/unbound/a-records.conf"
-        read_only: true
-      - type: bind
-        source: "${UNBOUND_VOLUME_PATH}/srv-records.conf"
-        target: "/opt/unbound/etc/unbound/srv-records.conf"
-        read_only: true
-      - type: bind
-        source: "${UNBOUND_VOLUME_PATH}/unbound.conf"
-        target: "/opt/unbound/etc/unbound/unbound.conf"
-        read_only: true
+      - type: volume
+        source: dns
+        target: "/opt/unbound/etc/unbound"
+      # enable below accordingly
+      # - type: bind
+      #   source: "${UNBOUND_VOLUME_PATH}/forward-records.conf"
+      #   target: "/opt/unbound/etc/unbound/forward-records.conf"
+      #   read_only: true
+      # - type: bind
+      #   source: "${UNBOUND_VOLUME_PATH}/a-records.conf"
+      #   target: "/opt/unbound/etc/unbound/a-records.conf"
+      #   read_only: true
+      # - type: bind
+      #   source: "${UNBOUND_VOLUME_PATH}/srv-records.conf"
+      #   target: "/opt/unbound/etc/unbound/srv-records.conf"
+      #   read_only: true
+      # - type: bind
+      #   source: "${UNBOUND_VOLUME_PATH}/unbound.conf"
+      #   target: "/opt/unbound/etc/unbound/unbound.conf"
+      #   read_only: true
     networks:
       - dns
     restart: unless-stopped
