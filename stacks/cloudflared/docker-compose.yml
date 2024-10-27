@@ -27,9 +27,3 @@ services:
         reservations:
           cpus: '0.01'
           memory: '32M'
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://${CLOUDFLARED_TUNNEL_METRICS}/metrics" ]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 30s

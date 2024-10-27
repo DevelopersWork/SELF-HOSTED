@@ -39,4 +39,4 @@ docker run -d \
     --restart unless-stopped \
     --cpus="0.5" \
     --memory="256m" \
-    portainer/portainer-ce:2.21.0 || { echo "Failed to start Portainer container."; exit 1; }
+    portainer/portainer-ce:2.23.0 || { echo "Failed to start Portainer container."; exit 1; }

@@ -1,0 +1,13 @@
+time="2024-10-19T17:32:54Z" level=info msg="Using docker host 'unix:///var/run/docker.sock', and daemon socket 'unix:///var/run/docker.sock'"
+[enforcer/branch-policy-enforcement] 🚀  Start image=catthehacker/ubuntu:act-latest
+[enforcer/branch-policy-enforcement]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=true
+[enforcer/branch-policy-enforcement]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[enforcer/branch-policy-enforcement]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[enforcer/branch-policy-enforcement]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[enforcer/branch-policy-enforcement] ⭐ Run Main Check if PR is to develop
+[enforcer/branch-policy-enforcement]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[enforcer/branch-policy-enforcement]   | ERROR: You cannot merge to develop from main.
+[enforcer/branch-policy-enforcement]   ❌  Failure - Main Check if PR is to develop
+[enforcer/branch-policy-enforcement] exitcode '1': failure
+[enforcer/branch-policy-enforcement] 🏁  Job failed
+Error: Job 'branch-policy-enforcement' failed

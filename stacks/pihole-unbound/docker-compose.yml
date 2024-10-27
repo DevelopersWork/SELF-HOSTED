@@ -4,8 +4,6 @@ version: '3.9'
 services:
   pihole:
     image: pihole/pihole:2024.07.0
-    container_name: pihole
-    hostname: pihole
     depends_on:
       - unbound
     ports:
@@ -15,48 +13,26 @@ services:
       - PIHOLE_UID=${PUID}
       - PIHOLE_GID=${PGID}
       - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
-      - DNSMASQ_LISTENING=${PIHOLE_DNSMASQ_LISTENING}
-      - TZ=${PIHOLE_TZ:-IST}
-      - CUSTOM_CACHE_SIZE=${PIHOLE_CACHE_SIZE}
+      - DNSMASQ_LISTENING=single # <local|all|single>
+      - TZ=IST
+      - CUSTOM_CACHE_SIZE=10000
       - IPv6=false
       - PIHOLE_DNS_=unbound
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
       - WEBTHEME=high-contrast-dark
     volumes:
-      - "${PIHOLE_VOLUME_PATH}:/etc/pihole/:rw"
-      - "${PIHOLE_VOLUME_PATH}/dnsmasq.d:/etc/dnsmasq.d/:rw"
+      - type: volume
+        source: dns
+        target: "/etc/pihole/"
+        read_only: false
+      - type: volume
+        source: dns
+        target: "/etc/dnsmasq.d/"
+        read_only: false
     networks:
-      - domain-name-server
-    restart: unless-stopped
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-      resources:
-        limits:
-          cpus: '0.4'
-          memory: '1024M'
-        reservations:
-          cpus: '0.01'
-          memory: '256M'
-    healthcheck:
-      test: [ "CMD", "dig", "@localhost", "-p", "53", "example.com" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-  unbound:
-    container_name: unbound
-    image: mvance/unbound:1.20.0
-    hostname: unbound
-    volumes:
-      - "${UNBOUND_VOLUME_PATH}/forward-records.conf:/opt/unbound/etc/unbound/forward-records.conf:ro"
-      - "${UNBOUND_VOLUME_PATH}/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro"
-      - "${UNBOUND_VOLUME_PATH}/srv-records.conf:/opt/unbound/etc/unbound/srv-records.conf:ro"
-    networks:
-      - domain-name-server
+      - dns
+      - bridge
     restart: unless-stopped
     deploy:
       restart_policy:
@@ -66,23 +42,68 @@ services:
       resources:
         limits:
           cpus: '0.7'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '512M'
+    healthcheck:
+      test: [ "CMD", "dig", "@localhost", "-p", "53", "example.com" ]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+  unbound:
+    image: mvance/unbound:1.21.1
+    volumes:
+      - type: bind
+        source: "${UNBOUND_VOLUME_PATH}/forward-records.conf"
+        target: "/opt/unbound/etc/unbound/forward-records.conf"
+        read_only: true
+      - type: bind
+        source: "${UNBOUND_VOLUME_PATH}/a-records.conf"
+        target: "/opt/unbound/etc/unbound/a-records.conf"
+        read_only: true
+      - type: bind
+        source: "${UNBOUND_VOLUME_PATH}/srv-records.conf"
+        target: "/opt/unbound/etc/unbound/srv-records.conf"
+        read_only: true
+      - type: bind
+        source: "${UNBOUND_VOLUME_PATH}/unbound.conf"
+        target: "/opt/unbound/etc/unbound/unbound.conf"
+        read_only: true
+    networks:
+      - dns
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
           memory: '256M'
         reservations:
-          cpus: '0.01'
+          cpus: '0.5'
           memory: '32M'
     healthcheck:
       test: [ "CMD", "unbound-host", "-C", "/opt/unbound/etc/unbound/unbound.conf", "example.com" ]
-      interval: 300s
-      timeout: 5s
+      interval: 15m
+      timeout: 10s
       retries: 5
       start_period: 30s
 
 networks:
-  domain-name-server:
-    name: "dns"
+  dns:
+    name: "domain-name-server"
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.22.53.0/24
     external: false
+
+volumes:
+  dns:
+    name: "domain-name-server"
+    driver: local

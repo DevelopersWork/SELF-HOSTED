@@ -1,0 +1,31 @@
+# stacks/dockge/docker-compose.yml
+version: "3.9"
+
+services:
+  dockge:
+    container_name: dockge
+    image: docker.io/louislam/dockge:1.4.2
+    hostname: dockge
+    ports:
+      - 5001:5001
+    user: ${PUID}:${PGID}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - "${FILEBROWSER_VOLUME_PATH}/database/dockge.db:/database.db:rw"
+      - "${MOUNT_PATH:-/}:/srv/:rw"
+    network_mode: bridge
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '256M'
+        reservations:
+          cpus: '0.01'
+          memory: '32M'

@@ -26,8 +26,6 @@ create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "PIHOLE_WEBPASSWORD" "password"
-update_env_file $ENV_FILE "PIHOLE_DNSMASQ_LISTENING" "single" # <local|all|single>
-update_env_file $ENV_FILE "PIHOLE_CACHE_SIZE" "20000"
 update_env_file $ENV_FILE "PIHOLE_VOLUME_PATH" "$PIHOLE_VOLUME_PATH"
 update_env_file $ENV_FILE "UNBOUND_VOLUME_PATH" "$UNBOUND_VOLUME_PATH"
 
