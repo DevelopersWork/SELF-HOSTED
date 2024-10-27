@@ -4,8 +4,7 @@ version: '3.9'
 services:
   pihole:
     image: pihole/pihole:2024.07.0
-    depends_on:
-      - unbound
+    user: ${PUID}:${PGID}
     ports:
       - 53:53/udp
       - 1010:80/tcp
@@ -25,14 +24,15 @@ services:
       - type: volume
         source: dns
         target: "/etc/pihole/"
-        read_only: false
+        read_write: false
       - type: volume
         source: dns
         target: "/etc/dnsmasq.d/"
         read_only: false
+    depends_on:
+      - unbound
     networks:
       - dns
-      - bridge
     restart: unless-stopped
     deploy:
       restart_policy:
@@ -54,6 +54,7 @@ services:
       start_period: 60s
   unbound:
     image: mvance/unbound:1.21.1
+    user: ${PUID}:${PGID}
     volumes:
       - type: bind
         source: "${UNBOUND_VOLUME_PATH}/forward-records.conf"
@@ -102,8 +103,6 @@ networks:
       config:
         - subnet: 172.22.53.0/24
     external: false
-  bridge:
-    external: true
 
 volumes:
   dns:
