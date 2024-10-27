@@ -102,6 +102,8 @@ networks:
       config:
         - subnet: 172.22.53.0/24
     external: false
+  bridge:
+    external: true
 
 volumes:
   dns:
