@@ -108,3 +108,6 @@ volumes:
   dns:
     name: "domain-name-server"
     driver: local
+    driver_opts:
+      uid: ${PUID}
+      gid: ${PGID}
