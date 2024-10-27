@@ -12,7 +12,7 @@ services:
       - PIHOLE_UID=${PUID}
       - PIHOLE_GID=${PGID}
       - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
-      - DNSMASQ_LISTENING=single # <local|all|single>
+      - DNSMASQ_LISTENING=single # local|all|single
       - TZ=IST
       - CUSTOM_CACHE_SIZE=10000
       - IPv6=false
@@ -24,11 +24,9 @@ services:
       - type: volume
         source: dns
         target: "/etc/pihole/"
-        read_write: false
       - type: volume
         source: dns
         target: "/etc/dnsmasq.d/"
-        read_only: false
     depends_on:
       - unbound
     networks:
