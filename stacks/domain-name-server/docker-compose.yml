@@ -1,4 +1,4 @@
-# stacks/pihole-unbound/docker-compose.yml
+# stacks/domain-name-server/docker-compose.yml
 version: '3.9'
 
 services:

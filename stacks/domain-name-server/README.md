@@ -1,4 +1,5 @@
-# Pi-hole & Unbound Stack
+# DNS(Domain Name Server) Stack 
+> Pi-hole + Unbound
 
 This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validating, recursive, and caching DNS resolver. This setup provides a comprehensive solution for ad-free browsing and enhanced privacy and security for your home network.
 
@@ -18,9 +19,6 @@ This stack combines Pi-hole, a network-wide ad blocker, with Unbound, a validati
 
 - **`PUID`:** User ID (UID) for running the containers.
 - **`PGID`:** Group ID (GID) for running the containers.
-- **`PIHOLE_DNS_PORT`:** Port for DNS traffic (default: `53`).
-- **`PIHOLE_HTTP_WEBPORT`:** Port for Pi-hole web interface (default: `1010`).
-- **`PIHOLE_HTTPS_WEBPORT`:** Port for Pi-hole web interface over HTTPS (default: `4443`).
 - **`PIHOLE_WEBPASSWORD`:** Password for the Pi-hole web interface (default: `password`). 
 - **`PIHOLE_VOLUME_PATH`:** Path to the Pi-hole data volume (defaults to `/home/docker/containers/pihole`).
 - **`PIHOLE_RESOURCES_CPUS`:** CPU cores allocated to Pi-hole (default: `0.5`).

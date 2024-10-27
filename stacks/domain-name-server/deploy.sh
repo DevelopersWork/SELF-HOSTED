@@ -1,5 +1,5 @@
 #!/bin/bash
-# stacks/pihole-unbound/deploy.sh
+# stacks/domain-name-server/deploy.sh
 
 UNBOUND_CONFIG_URL="https://raw.githubusercontent.com/MatthewVance/unbound-docker/master/1.19.3/data/opt/unbound/etc/unbound"
 
@@ -11,7 +11,7 @@ source "$1/utils.sh"
 load_config "$2"
 
 # Define and Create the Pihole Unbound stack directory
-STACK_PATH="$DOCKER_STACKS_PATH/pihole-unbound"
+STACK_PATH="$DOCKER_STACKS_PATH/domain-name-server"
 create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Define and Create the Pihole and Unbound volume directory
