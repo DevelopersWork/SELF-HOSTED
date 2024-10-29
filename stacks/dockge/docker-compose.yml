@@ -1,0 +1,40 @@
+# stacks/dockge/docker-compose.yml
+version: '3.9'
+
+services:
+  dockge:
+    image: docker.io/louislam/dockge:1.4.2
+    user: ${PUID}:${PGID}
+    ports:
+      - 5001:5001/tcp
+    volumes:
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+      - type: bind
+        source: "$DOCKER_STACKS_PATH"
+        target: "/opt/stacks/"
+      - type: volume
+        source: dockge
+        target: "/app/data"
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: '256M'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5001" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  dockge:
+    name: "dockge"
+    driver: local
