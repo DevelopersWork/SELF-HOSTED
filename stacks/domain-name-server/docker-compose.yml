@@ -54,9 +54,9 @@ services:
   unbound:
     image: mvance/unbound:1.21.1
     volumes:
-      - type: volume
-        source: unbound
-        target: "/opt/unbound/etc/unbound"
+      - type: bind
+        source: "$UNBOUND_VOLUME_PATH"
+        target: "/opt/unbound/etc/unbound/"
     networks:
       - dns
     restart: unless-stopped
@@ -93,21 +93,6 @@ volumes:
   pihole:
     name: "dns-pihole"
     driver: local
-    driver_opts:
-      type: none
-      device: "$PIHOLE_VOLUME_PATH"
-      o: bind
   pihole-dnsmasq_d:
     name: "dns-pihole-dnsmasq-d"
     driver: local
-    driver_opts:
-      type: none
-      device: "$PIHOLE_VOLUME_PATH/dnsmasq.d"
-      o: bind
-  unbound:
-    name: "dns-unbound"
-    driver: local
-    driver_opts:
-      type: none
-      device: "$UNBOUND_VOLUME_PATH"
-      o: bind
