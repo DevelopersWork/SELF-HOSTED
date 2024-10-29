@@ -13,7 +13,7 @@ services:
       - WEB_UID=${PUID}
       - WEB_GID=${PGID}
       - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
-      - TZ=IST
+      - TZ=Asia/Kolkata
       - PIHOLE_DNS_=unbound
       - DNS_BOGUS_PRIV=true
       - DNS_FQDN_REQUIRED=true
@@ -26,7 +26,7 @@ services:
         source: pihole
         target: "/etc/pihole"
       - type: volume
-        source: dnsmasq-d
+        source: pihole-dnsmasq_d
         target: "/etc/dnsmasq.d"
     depends_on:
       - unbound
@@ -97,7 +97,7 @@ volumes:
       type: none
       device: "$PIHOLE_VOLUME_PATH"
       o: bind
-  dnsmasq-d:
+  pihole-dnsmasq_d:
     name: "dns-pihole-dnsmasq-d"
     driver: local
     driver_opts:
