@@ -94,5 +94,5 @@ volumes:
     name: "dns-pihole"
     driver: local
   pihole-dnsmasq_d:
-    name: "dns-pihole-dnsmasq-d"
+    name: "dns-pihole-dnsmasq_d"
     driver: local
