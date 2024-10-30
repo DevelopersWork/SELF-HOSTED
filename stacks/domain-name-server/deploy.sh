@@ -8,7 +8,7 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
-# Define and Create the Pihole Unbound stack directory
+# Define and Create the stack directory
 STACK_PATH="$DOCKER_STACKS_PATH/domain-name-server"
 create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
