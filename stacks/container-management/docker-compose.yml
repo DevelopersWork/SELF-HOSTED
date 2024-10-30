@@ -14,7 +14,7 @@ services:
       - type: volume
         source: portainer
         target: "/data"
-    network-mode: bridge
+    network_mode: bridge
     restart: unless-stopped
     deploy:
       restart_policy:
@@ -46,6 +46,7 @@ services:
       - type: volume
         source: dockge
         target: "/app/data"
+    network_mode: bridge
     restart: unless-stopped
     deploy:
       restart_policy:
