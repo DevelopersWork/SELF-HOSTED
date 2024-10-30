@@ -12,7 +12,7 @@ This directory contains Bash scripts that automate various aspects of setting up
 2.  **`02-user-setup.sh`:**
     -   Creates a dedicated user (and group if it doesn't exist) for running Docker containers in a non-root environment for enhanced security.
 3.  **`03-storage-setup.sh`:**
-    -   Sets up the necessary directories (`containers`, `stacks`, `storage`) for Docker data and configuration.
+    -   Sets up the necessary directories (`volumes`, `stacks`, `storage`) for Docker data and configuration.
     -   Assigns ownership of these directories to the Docker user for proper permissions.
 4.  **`04-setup-portainer.sh`:**
     -   Installs and configures Portainer, a web-based Docker management UI.

@@ -13,7 +13,7 @@ source "$ENV_FILE" || {
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
 # Array of scripts to run
-scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-portainer.sh" "05-setup-dockge.sh" "06-setup-stacks.sh")
+scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-stacks.sh" "05-setup-container-management.sh")
 
 # Check if scripts exist
 for script in "${scripts[@]}"; do

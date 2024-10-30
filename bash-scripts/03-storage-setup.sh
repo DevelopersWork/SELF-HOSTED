@@ -12,6 +12,6 @@ load_config "$2"
 check_user 0
 
 create_dir_if_not_exists "$DOCKER_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
-create_dir_if_not_exists "$DOCKER_CONTAINER_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+create_dir_if_not_exists "$DOCKER_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 create_dir_if_not_exists "$DOCKER_STACKS_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 create_dir_if_not_exists "$DOCKER_STORAGE_PATH" "$DOCKER_USER" "$DOCKER_GROUP"

@@ -6,14 +6,14 @@ ENV_FILE="./.env"  # Global .env file
 
 # Source the environment file (exit if it fails or doesn't exist)
 source "$ENV_FILE" || {
-  echo "Error: .env file not found or failed to source." >&2
-  exit 1
+  echo "Warning: .env file not found or failed to source." >&2
+  ENV_FILE="./.env_TEMPLATE"
 }
 
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
 # Array of scripts to run
-scripts=("06-setup-stacks.sh")
+scripts=("04-setup-stacks.sh")
 
 # Create alias for running commands as the docker user
 AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"

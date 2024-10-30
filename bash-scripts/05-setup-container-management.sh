@@ -1,5 +1,5 @@
 #!/bin/bash
-# bash-scripts/04-setup-portainer.sh
+# bash-scripts/04-setup-container-management.sh
 
 # Source the utility script
 source "$1/utils.sh" 
