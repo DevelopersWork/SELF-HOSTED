@@ -8,6 +8,9 @@ ENV_FILE="./.env"  # Global .env file
 source "$ENV_FILE" || {
   echo "Warning: .env file not found or failed to source." >&2
   ENV_FILE="./.env_TEMPLATE"
+  source "$ENV_FILE" || {
+    exit 1
+  }
 }
 
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
