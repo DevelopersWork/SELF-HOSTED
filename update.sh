@@ -8,7 +8,7 @@ ENV_FILE="./.env"
 if [[ -f "$ENV_FILE" ]]; then
   source "$ENV_FILE"
 else
-  echo "Warning: $ENV_FILE not found. Trying .env_TEMPLATE..." >&2
+  echo "Warning: $ENV_FILE not found. Trying .env_TEMPLATE..."
   ENV_FILE="./.env_TEMPLATE"
 
   # Check if the .env_TEMPLATE file exists and source it
