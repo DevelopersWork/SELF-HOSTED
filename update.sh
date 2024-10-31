@@ -1,24 +1,25 @@
 #!/bin/bash
 # update.sh
 
-# Get the environment file path
-ENV_FILE="./.env"
-
-# Check if the .env file exists and source it
-if [[ -f "$ENV_FILE" ]]; then
-  source "$ENV_FILE"
-else
-  echo "Warning: $ENV_FILE not found. Trying .env_TEMPLATE..."
-  ENV_FILE="./.env_TEMPLATE"
-
-  # Check if the .env_TEMPLATE file exists and source it
-  if [[ -f "$ENV_FILE" ]]; then
-    source "$ENV_FILE"
+# Source environment file
+source_env_file() {
+  if [[ -f "$1" ]]; then
+    source "$1"
   else
-    echo "Error: $ENV_FILE not found. Exiting." >&2
-    exit 1
+    echo "Warning: $1 not found." >&2
+    return 1
   fi
-fi
+}
+
+ENV_FILE="./.env"
+# prioritizing .env over .env_TEMPLATE
+source_env_file $ENV_FILE || {
+  ENV_FILE = "./.env_TEMPLATE"
+  source_env_file $ENV_FILE 
+} || {
+  echo "Error: No environment file found. Exiting." >&2
+  exit 1
+}
 
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
