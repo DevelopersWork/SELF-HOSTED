@@ -51,11 +51,5 @@ for script in "${scripts[@]:3:2}"; do
   echo "Script $script completed successfully."
 done
 
-# Run script 06 as the 'docker' user for each stack
-for stack in "${STACKS[@]}"; do  
-  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/${scripts[5]}" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running ${scripts[5]} for $stack"; exit 1; }
-done
-echo "Script ${scripts[5]} completed successfully."
-
 # Clean up - remove the temporary directory
 sudo rm -rf "$TEMP_DIR"

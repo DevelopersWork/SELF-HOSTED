@@ -16,7 +16,7 @@ source "$ENV_FILE" || {
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
 # Array of scripts to run
-scripts=("04-setup-stacks.sh")
+scripts=("04-setup-stacks.sh" "05-setup-container-management.sh")
 
 # Create alias for running commands as the docker user
 AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
@@ -28,11 +28,11 @@ TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary
 sudo cp -r "." "$TEMP_DIR/"
 sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
-# Run script 06 as the 'docker' user for each stack
-for stack in "${STACKS[@]}"; do  
-  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/${scripts[0]}" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" "$stack" || { echo "Error running ${scripts[0]} for $stack"; exit 1; }
+# Run scripts 04 and 05 as the 'docker' user
+for script in "${scripts[@]:3:2}"; do  
+  $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
+  echo "Script $script completed successfully."
 done
-echo "Script ${scripts[0]} completed successfully."
 
 # Clean up - remove the temporary directory
 sudo rm -rf "$TEMP_DIR"
