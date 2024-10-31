@@ -18,7 +18,7 @@ services:
         source: portainer
         target: "/data"
     network_mode: bridge
-    restart: unless-stopped
+    restart: always
     deploy:
       mode: replicated
       replicas: 1
@@ -47,7 +47,7 @@ services:
         source: dockge
         target: "/app/data"
     network_mode: bridge
-    restart: unless-stopped
+    restart: always
     deploy:
       restart_policy:
         condition: on-failure
