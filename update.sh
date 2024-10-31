@@ -6,9 +6,10 @@ ENV_FILE="./.env"  # Global .env file
 
 # Source the environment file (exit if it fails or doesn't exist)
 source "$ENV_FILE" || {
-  echo "Warning: .env file not found or failed to source." >&2
+  echo "Warning: $ENV_FILE file not found or failed to source." >&2
   ENV_FILE="./.env_TEMPLATE"
   source "$ENV_FILE" || {
+    echo "Error: $ENV_FILE file not found or failed to source." >&2
     exit 1
   }
 }
