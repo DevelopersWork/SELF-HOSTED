@@ -3,14 +3,16 @@
 
 ENV_FILE="./.env"
 # prioritizing .env over .env_TEMPLATE
-source $ENV_FILE || {
+if [[ -f $ENV_FILE ]]; then
+  source $ENV_FILE
+else
   echo "Warning: $ENV_FILE not found." >&2
   ENV_FILE="./.env_TEMPLATE"
-  source $ENV_FILE
-} || {
-  echo "Error: No environment file found. Exiting." >&2
-  exit 1
-}
+  source "$ENV_FILE" || {
+    echo "Error: No environment file found. Exiting." >&2
+    exit 1
+  }
+fi
 
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
