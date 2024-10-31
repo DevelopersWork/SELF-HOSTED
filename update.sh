@@ -14,7 +14,7 @@ source_env_file() {
 ENV_FILE="./.env"
 # prioritizing .env over .env_TEMPLATE
 source_env_file $ENV_FILE || {
-  ENV_FILE = "./.env_TEMPLATE"
+  ENV_FILE="./.env_TEMPLATE"
   source_env_file $ENV_FILE 
 } || {
   echo "Error: No environment file found. Exiting." >&2
