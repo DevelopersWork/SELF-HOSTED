@@ -6,7 +6,7 @@ ENV_FILE="./.env"
 if [[ -f $ENV_FILE ]]; then
   source $ENV_FILE
 else
-  echo "Warning: $ENV_FILE not found." >&2
+  echo "Warning: $ENV_FILE not found."
   ENV_FILE="./.env_TEMPLATE"
   source "$ENV_FILE" || {
     echo "Error: No environment file found. Exiting." >&2
