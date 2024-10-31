@@ -1,12 +1,14 @@
 #!/bin/bash
 # update.sh
 
-ENV_FILE="./.env"
+# Check if the .env file exists and source it
 # prioritizing .env over .env_TEMPLATE
+ENV_FILE="./.env"
 if [[ -f $ENV_FILE ]]; then
   source $ENV_FILE
 else
   echo "Warning: $ENV_FILE not found."
+  # Check if the .env_TEMPLATE file exists and source it
   ENV_FILE="./.env_TEMPLATE"
   source $ENV_FILE || {
     echo "Error: No environment file found. Exiting." >&2

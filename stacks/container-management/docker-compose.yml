@@ -1,10 +1,10 @@
 # stacks/container-management/docker-compose.yml
-# version: '3.9'
+version: '3.9'
 
 services:
   portainer:
     image: docker.io/portainer/portainer-ce:2.21.4
-    user: ${PUID}:${PGID}
+    # user: ${PUID}:${PGID}
     ports:
       - 9000:9000/tcp
     volumes:
@@ -33,7 +33,7 @@ services:
       start_period: 10s
   dockge:
     image: docker.io/louislam/dockge:1.4.2
-    user: ${PUID}:${PGID}
+    # user: ${PUID}:${PGID}
     ports:
       - 5001:5001/tcp
     volumes:
@@ -66,8 +66,8 @@ services:
 
 volumes:
   portainer:
-    name: "portainer"
+    name: "cm-portainer"
     driver: local
   dockge:
-    name: "dockge"
+    name: "cm-dockge"
     driver: local
