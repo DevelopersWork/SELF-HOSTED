@@ -32,12 +32,6 @@ services:
         limits:
           cpus: '1'
           memory: '256M'
-    healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9000/api/system/status" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
   dockge:
     image: docker.io/louislam/dockge:1.4.2
     ports:
@@ -64,7 +58,7 @@ services:
           cpus: '1'
           memory: '256M'
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5001" ]
+      test: [ "CMD", "curl", "-s", "--fail", "--head", "http://localhost:5001" ]
       interval: 30s
       timeout: 10s
       retries: 5
