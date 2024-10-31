@@ -1,9 +1,9 @@
 # stacks/container-management/docker-compose.yml
-version: '3.9'
+# version: '3.9'
 
 services:
   portainer:
-    image: docker.io/portainer/portainer-ce:lts
+    image: docker.io/portainer/portainer-ce:2.21.4
     user: ${PUID}:${PGID}
     ports:
       - 9000:9000/tcp
