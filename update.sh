@@ -7,7 +7,7 @@ source_env_file() {
     source "$1"
   else
     echo "Warning: $1 not found." >&2
-    return 1
+    return 1  # Return an error code
   fi
 }
 
@@ -15,7 +15,7 @@ ENV_FILE="./.env"
 # prioritizing .env over .env_TEMPLATE
 source_env_file $ENV_FILE || {
   ENV_FILE="./.env_TEMPLATE"
-  source_env_file $ENV_FILE 
+  source_env_file $ENV_FILE
 } || {
   echo "Error: No environment file found. Exiting." >&2
   exit 1
