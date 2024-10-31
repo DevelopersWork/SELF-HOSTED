@@ -1,18 +1,24 @@
 #!/bin/bash
 # update.sh
 
-# Get the environment file path and exit if not provided or not a regular file
-ENV_FILE="./.env"  # Global .env file
+# Get the environment file path
+ENV_FILE="./.env"
 
-# Source the environment file (exit if it fails or doesn't exist)
-source "$ENV_FILE" || {
-  echo "Warning: $ENV_FILE file not found or failed to source." >&2
+# Check if the .env file exists and source it
+if [[ -f "$ENV_FILE" ]]; then
+  source "$ENV_FILE"
+else
+  echo "Warning: $ENV_FILE not found. Trying .env_TEMPLATE..." >&2
   ENV_FILE="./.env_TEMPLATE"
-  source "$ENV_FILE" || {
-    echo "Error: $ENV_FILE file not found or failed to source." >&2
+
+  # Check if the .env_TEMPLATE file exists and source it
+  if [[ -f "$ENV_FILE" ]]; then
+    source "$ENV_FILE"
+  else
+    echo "Error: $ENV_FILE not found. Exiting." >&2
     exit 1
-  }
-}
+  fi
+fi
 
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
