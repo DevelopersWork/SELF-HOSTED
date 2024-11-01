@@ -50,7 +50,6 @@ services:
       start_period: 60s
   unbound:
     image: docker.io/mvance/unbound:1.21.1
-    user: ${PUID}:${PGID}
     volumes:
       - type: bind
         source: "$UNBOUND_VOLUME_PATH"
