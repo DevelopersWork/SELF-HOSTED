@@ -4,7 +4,6 @@ version: "3.9"
 services:
   filebrowser:
     image: docker.io/filebrowser/filebrowser:v2.31.2-s6
-    user: ${PUID}:${PGID}
     ports:
       - 8082:80
     environment:

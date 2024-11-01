@@ -9,10 +9,6 @@ services:
       TUNNEL_TOKEN: "${CLOUDFLARED_TUNNEL_TOKEN}"
       TUNNEL_METRICS: "${CLOUDFLARED_TUNNEL_METRICS}"
     command: tunnel --no-autoupdate run
-    volumes:
-      - type: volume
-        source: cloudflared
-        target: "/etc/cloudflared"
     network_mode: bridge
     restart: unless-stopped
     deploy:
@@ -24,8 +20,3 @@ services:
           memory: '256M'
         reservations:
           memory: '32M'
-
-volumes:
-  cloudflared:
-    name: "cloudflared"
-    driver: local
