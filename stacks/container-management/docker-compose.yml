@@ -26,8 +26,6 @@ services:
         constraints: [ node.role == manager ]
       restart_policy:
         condition: always
-        delay: 5s
-        max_attempts: 3
       resources:
         limits:
           cpus: '1'
@@ -51,8 +49,6 @@ services:
     deploy:
       restart_policy:
         condition: always
-        delay: 5s
-        max_attempts: 3
       resources:
         limits:
           cpus: '1'
