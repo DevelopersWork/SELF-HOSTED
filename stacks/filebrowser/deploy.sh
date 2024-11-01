@@ -1,5 +1,5 @@
 #!/bin/bash
-# stacks/dockge/deploy.sh
+# stacks/filebrowser/deploy.sh
 
 # Source the utility script
 source "$1/utils.sh"
@@ -8,12 +8,12 @@ source "$1/utils.sh"
 # Source the environment file to load variables
 load_config "$2"
 
-# Define and Create the dockge stack directory
-STACK_PATH="$DOCKER_STACKS_PATH/dockge"
+# Define and Create the filebrowser stack directory
+STACK_PATH="$DOCKER_STACKS_PATH/filebrowser"
 create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
-# Define and Create the dockge volume directory
-VOLUME_PATH="$DOCKER_CONTAINER_PATH/dockge"
+# Define and Create the filebrowser volume directory
+VOLUME_PATH="$DOCKER_VOLUME_PATH/filebrowser"
 create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
@@ -22,9 +22,4 @@ create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
 update_env_file $ENV_FILE "PUID" "$(id -u $DOCKER_USER)"
 update_env_file $ENV_FILE "PGID" "$(getent group $DOCKER_GROUP | cut -d: -f3)"
 update_env_file $ENV_FILE "FILEBROWSER_VOLUME_PATH" "$VOLUME_PATH"
-
-# Database File and Directory
-DATABASE_PATH="$VOLUME_PATH/database" 
-DATABASE_FILE="$DATABASE_PATH/dockge.db"
-create_dir_if_not_exists "$DATABASE_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
-create_file_if_not_exists "$DATABASE_FILE" "$DOCKER_USER" "$DOCKER_GROUP" 
+update_env_file $ENV_FILE "SRV_MOUNT_PATH" "/"
