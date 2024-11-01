@@ -16,10 +16,7 @@ This stack deploys File Browser, a user-friendly web-based file manager for your
 - **`PUID`**: The user ID (UID) for running the container (automatically set in the `deploy.sh` script).
 - **`PGID`**: The group ID (GID) for running the container (automatically set in the `deploy.sh` script).
 - **`FILEBROWSER_VOLUME_PATH`**: The path where File Browser data is stored (defaults to `/home/docker/containers/filebrowser`).
-- **`FILEBROWSER_HTTP_WEBPORT`**: The port on which File Browser is accessible (defaults to `8082`).
-- **`FILEBROWSER_RESOURCES_CPUS`**: The number of CPU cores allocated to File Browser (defaults to `0.5`).
-- **`FILEBROWSER_RESOURCES_MEMORY`**: The amount of memory allocated to File Browser (defaults to `512M`).
-- **`MOUNT_PATH`**: The path on your host system that you want to share with File Browser (no default, must be specified in the `deploy.sh` script).
+- **`SRV_MOUNT_PATH`**: The path on your host system that you want to share with File Browser (no default, must be specified in the `deploy.sh` script).
 
 ## Usage
 

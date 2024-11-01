@@ -1,0 +1,41 @@
+# stacks/filebrowser/docker-compose.yml
+version: "3.9"
+
+services:
+  filebrowser:
+    image: docker.io/filebrowser/filebrowser:v2.31.2-s6
+    ports:
+      - 8082:80
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - type: volume
+        source: filebrowser
+        target: "/database"
+      - type: bind
+        source: "$FILEBROWSER_VOLUME_PATH"
+        target: "/config/"
+      - type: bind
+        source: "$SRV_MOUNT_PATH"
+        target: "/srv/"
+    network_mode: bridge
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '256M'
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost/health || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 0s
+
+volumes:
+  filebrowser:
+    name: "filebrowser"
+    driver: local

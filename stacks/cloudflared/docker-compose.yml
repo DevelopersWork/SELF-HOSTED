@@ -3,27 +3,20 @@ version: '3.9'
 
 services:
   cloudflared:
-    image: cloudflare/cloudflared:2024.10.0
-    container_name: cloudflared
-    hostname: cloudflared
+    image: docker.io/cloudflare/cloudflared:2024.10.1
     user: ${PUID}:${PGID}
     environment:
       TUNNEL_TOKEN: "${CLOUDFLARED_TUNNEL_TOKEN}"
       TUNNEL_METRICS: "${CLOUDFLARED_TUNNEL_METRICS}"
     command: tunnel --no-autoupdate run
-    volumes:
-      - "${CLOUDFLARED_VOLUME_PATH}:/etc/cloudflared/:rw"
     network_mode: bridge
     restart: unless-stopped
     deploy:
       restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        condition: unless-stopped
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '1'
           memory: '256M'
         reservations:
-          cpus: '0.01'
           memory: '32M'
