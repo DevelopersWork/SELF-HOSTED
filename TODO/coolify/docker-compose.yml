@@ -1,0 +1,130 @@
+# stacks/coolify/docker-compose.yml
+version: '3.8'
+
+services:
+  coolify:
+    image: ghcr.io/coollabsio/coolify:latest
+    container_name: coolify
+    hostname: coolify
+    restart: unless-stopped
+    ports:
+      - "${COOLIFY_HTTP_WEBPORT:-80}:80"
+    volumes:
+      - "${COOLIFY_VOLUME_PATH}/.env:/var/www/html/.env:ro"
+      - "${COOLIFY_VOLUME_PATH}/app:/var/www/html/storage/app/:rw"
+    networks:
+      - coolify
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "${COOLIFY_RESOURCES_CPUS}"
+          memory: "${COOLIFY_RESOURCES_MEMORY}"
+    environment:
+      - PHP_MEMORY_LIMIT=${COOLIFY_RESOURCES_MEMORY}
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres-coolify
+      - DB_PORT=5432
+      - DB_DATABASE=${POSTGRES_DB}
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - QUEUE_CONNECTION=redis
+      - REDIS_HOST=redis-coolify
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SSL_MODE=off
+      - PHP_PM_CONTROL=dynamic
+      - PHP_PM_START_SERVERS=1
+      - PHP_PM_MIN_SPARE_SERVERS=1
+      - PHP_PM_MAX_SPARE_SERVERS=10
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-coolify
+    hostname: postgres-coolify
+    restart: unless-stopped
+    volumes:
+      - "${COOLIFY_VOLUME_PATH}/postgresql:/var/lib/postgresql/data/:rw"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - coolify
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_RESOURCES_CPUS}"
+          memory: "${POSTGRES_RESOURCES_MEMORY}"
+
+  redis:
+    image: redis:alpine
+    hostname: redis-coolify
+    container_name: redis-coolify
+    command: redis-server --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"
+    restart: unless-stopped
+    volumes:
+      - coolify-redis-data:/data
+    environment:
+      - "REDIS_PASSWORD=${REDIS_PASSWORD}"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - coolify
+    deploy:
+      resources:
+        limits:
+          cpus: "${REDIS_RESOURCES_CPUS}"
+          memory: "${REDIS_RESOURCES_MEMORY}"
+
+  soketi:
+    image: quay.io/soketi/soketi:latest
+    hostname: soketi-coolify
+    container_name: soketi-coolify
+    restart: unless-stopped
+    ports:
+      - "${SOKETI_PORT:-6001}:6001"
+      - "${SOKETI_USAGE_PORT:-9601}:9601"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - SOKETI_DEBUG=${SOKETI_DEBUG:-false}
+      - SOKETI_DEFAULT_APP_ID=${PUSHER_APP_ID}
+      - SOKETI_DEFAULT_APP_KEY=${PUSHER_APP_KEY}
+      - SOKETI_DEFAULT_APP_SECRET=${PUSHER_APP_SECRET}
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://127.0.0.1:6001/health" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - coolify
+    deploy:
+      resources:
+        limits:
+          cpus: "${SOKETI_RESOURCES_CPUS}"
+          memory: "${SOKETI_RESOURCES_MEMORY}"
+
+volumes:
+  coolify-redis-data:
+
+
+networks:
+  coolify:
+    driver: bridge

@@ -1,0 +1,26 @@
+# stacks/dashy/docker-compose.yml
+version: '3.8'
+
+services:
+  dashy:
+    container_name: dashy
+    image: lissy93/dashy:3.1.0
+    hostname: dashy
+    user: ${PUID}:${PGID}
+    ports:
+      - ${DASHY_HTTP_WEBPORT}:8080/tcp
+    environment:
+      - NODE_ENV=production
+      - UID=${PUID}
+      - GID=${PGID}
+    volumes:
+      - "${DASHY_VOLUME_PATH}:/app/user-data/:rw"
+    restart: unless-stopped
+    network_mode: bridge
+    deploy:
+      resources:
+        limits:
+          cpus: "${DASHY_RESOURCES_CPUS}"
+          memory: "${DASHY_RESOURCES_MEMORY}"
+    security_opt:
+      - no-new-privileges:true

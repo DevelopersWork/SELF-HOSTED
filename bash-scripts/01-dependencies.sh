@@ -17,7 +17,8 @@ if ! command_exists docker; then
     read -r answer
 
     if [[ $answer = [Yy] ]]; then
-        install_package "$PACKAGE_MANAGER" "docker.io"
+        # install_package "$PACKAGE_MANAGER" "docker.io"
+        sh <(curl -sSL https://get.docker.com)
     else
         echo "Exiting script without installing Docker."
         exit 1

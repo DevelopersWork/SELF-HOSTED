@@ -1,0 +1,69 @@
+# stacks/container-management/docker-compose.yml
+version: '3.9'
+
+services:
+  portainer:
+    image: docker.io/portainer/portainer-ce:2.21.4
+    ports:
+      - 9000:9000/tcp
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=Asia/Kolkata
+    volumes:
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+      - type: volume
+        source: portainer
+        target: "/data"
+    network_mode: bridge
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [ node.role == manager ]
+      restart_policy:
+        condition: always
+      resources:
+        limits:
+          cpus: '1'
+          memory: '256M'
+  dockge:
+    image: docker.io/louislam/dockge:1.4.2
+    ports:
+      - 5001:5001/tcp
+    volumes:
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+      - type: bind
+        source: "$DOCKER_STACKS_PATH"
+        target: "/opt/stacks/"
+      - type: volume
+        source: dockge
+        target: "/app/data"
+    network_mode: bridge
+    restart: always
+    deploy:
+      restart_policy:
+        condition: always
+      resources:
+        limits:
+          cpus: '1'
+          memory: '256M'
+    healthcheck:
+      test: [ "CMD", "curl", "-s", "--fail", "--head", "http://localhost:5001" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  portainer:
+    name: "cm-portainer"
+    driver: local
+  dockge:
+    name: "cm-dockge"
+    driver: local

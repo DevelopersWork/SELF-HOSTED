@@ -1,0 +1,82 @@
+# stacks/nginx-proxy-manager/docker-compose.yml
+version: '3.9'
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:2.11.3
+    container_name: nginx-proxy-manager
+    hostname: nginx-proxy-manager
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - DISABLE_IPV6=true
+      # Comment below line if you are not interested in using the sqlite
+      - DB_SQLITE_FILE=/data/database.sqlite
+      # Uncomment below lines if you wanted to use external DB
+      # - DB_MYSQL_HOST=${DB_HOST:-mariadb-aria-npm}
+      # - DB_MYSQL_PORT=${DB_PORT:-3306}
+      # - DB_MYSQL_USER=${DB_USER}
+      # - DB_MYSQL_PASSWORD=${DB_PASSWORD}
+      # - DB_MYSQL_NAME=${DB_NAME}
+    volumes:
+      - "${NPM_VOLUME_PATH}/data:/data/:rw"
+      - "${NPM_VOLUME_PATH}/letsencrypt:/etc/letsencrypt/:rw"
+      - "${NPM_VOLUME_PATH}/letsencrypt/log:/tmp/letsencrypt-log/:rw"
+    networks:
+      - reverse-proxy
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '64M'
+  mariadb-aria:
+    image: jc21/mariadb-aria:10.11.5
+    container_name: mariadb-aria-npm
+    hostname: mariadb-aria-npm
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MARIADB_AUTO_UPGRADE=0
+    volumes:
+      - "${NPM_VOLUME_PATH}/mysql:/var/lib/mysql:rw"
+    networks:
+      - reverse-proxy
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '64M'
+    profiles:
+      - mariadb # Define a profile to control startup
+
+networks:
+  reverse-proxy:
+    name: "reverse-proxy"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.80.0/24
+    external: false

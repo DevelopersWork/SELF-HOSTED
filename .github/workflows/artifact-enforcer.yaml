@@ -1,0 +1,56 @@
+name: 'Pull Request Artifact Validation'
+
+on:
+  pull_request:
+    branches: [alpha, main]
+
+jobs:
+  validate-artifact:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # - name: Check for artifact.json (with correct name format)
+      #   id: check_artifact
+      #   run: |
+      #     FILENAME="${{ github.actor }}-.*-artifact.json" # Use regex for name matching
+      #     if [[ ! -f $FILENAME ]]; then
+      #       echo "::error::Missing or incorrectly named artifact.json file."
+      #       echo "Expected format: <your_username>-<feature_name/id>-artifact.json"
+      #       exit 1
+      #     fi
+      #     echo "::set-output name=artifact_file::$FILENAME" 
+
+      # - name: Validate artifact.json Structure
+      #   if: steps.check_artifact.outputs.artifact_file != ''
+      #   run: |
+      #     jq -e '
+      #       (.github.workflows and .github.workflows|type == "array") and
+      #       (.bash-scripts and .bash-scripts|type == "array") and
+      #       (.stacks and .stacks|type == "array") and
+      #       (./ and ./|type == "array")
+      #     ' ${{ steps.check_artifact.outputs.artifact_file }} || {
+      #       echo "::error::Invalid artifact.json structure."
+      #       echo "Required keys: .github.workflows, .bash-scripts, .stacks, ./ (root level)"
+      #       exit 1
+      #     }
+
+      # - name: Check if task is assigned/exists in a project
+      #   if: steps.check_artifact.outputs.artifact_file != ''
+      #   # ... (Your task/project validation logic here using GitHub API or other tools)
+
+      # - name: Create Artifact
+      #   if: steps.check_artifact.outputs.artifact_file != ''
+      #   run: |
+      #     jq -r '.files[]' ${{ steps.check_artifact.outputs.artifact_file }} | zip artifact.zip -@
+      #     echo "::set-output name=artifact_path::artifact.zip"
+          
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: filtered-files
+      #     path: ${{ steps.create_artifact.outputs.artifact_path }}

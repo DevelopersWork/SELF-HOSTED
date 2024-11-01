@@ -1,0 +1,94 @@
+# stacks/domain-name-server/docker-compose.yml
+version: '3.9'
+
+services:
+  pihole:
+    image: docker.io/pihole/pihole:2024.07.0
+    ports:
+      - 53:53/udp
+      - 1010:80/tcp
+    environment:
+      - PIHOLE_UID=${PUID}
+      - PIHOLE_GID=${PGID}
+      - WEB_UID=${PUID}
+      - WEB_GID=${PGID}
+      - WEBPASSWORD=${PIHOLE_WEBPASSWORD}
+      - TZ=Asia/Kolkata
+      - PIHOLE_DNS_=unbound
+      - DNS_BOGUS_PRIV=true
+      - DNS_FQDN_REQUIRED=true
+      - IPv6=false
+      - WEBTHEME=high-contrast-dark
+      - DNSMASQ_LISTENING=single # local|all|single
+      - CUSTOM_CACHE_SIZE=10000
+    volumes:
+      - type: volume
+        source: pihole
+        target: "/etc/pihole"
+      - type: volume
+        source: pihole-dnsmasq_d
+        target: "/etc/dnsmasq.d"
+    depends_on:
+      - unbound
+    networks:
+      - dns
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: '1024M'
+        reservations:
+          cpus: '0.1'
+          memory: '512M'
+    healthcheck:
+      test: [ "CMD", "dig", "@localhost", "-p", "53", "example.com" ]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+  unbound:
+    image: docker.io/mvance/unbound:1.21.1
+    volumes:
+      - type: bind
+        source: "$UNBOUND_VOLUME_PATH"
+        target: "/opt/unbound/etc/unbound/"
+    networks:
+      - dns
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+      resources:
+        limits:
+          cpus: '1'
+          memory: '256M'
+        reservations:
+          cpus: '0.5'
+          memory: '32M'
+    healthcheck:
+      test: [ "CMD", "unbound-host", "-C", "/opt/unbound/etc/unbound/unbound.conf", "example.com" ]
+      interval: 15m
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+networks:
+  dns:
+    name: "domain-name-server"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.53.0/24
+    external: false
+
+volumes:
+  pihole:
+    name: "dns-pihole"
+    driver: local
+  pihole-dnsmasq_d:
+    name: "dns-pihole-dnsmasq_d"
+    driver: local

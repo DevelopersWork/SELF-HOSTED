@@ -1,0 +1,31 @@
+# stacks/postgres/docker-compose.yml
+version: "3.9"
+
+services:
+  postgres:
+    container_name: postgres
+    image: docker.io/library/postgres:16-alpine
+
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+
+networks:
+  postgres:
+    name: "dns"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.53.0/24
+    external: false

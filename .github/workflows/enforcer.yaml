@@ -1,30 +1,43 @@
 # .github/workflows/enforcer.yaml
-name: 'Pull Request Validation'
+# Enforces branching standards and validates pull requests/pushes to ensure they meet specific criteria.
+name: 'enforcer'
 
 on:
   pull_request:
-    branches: [main, dev, alpha]
+    branches: [main, develop, alpha]
 
 jobs:
-  check_branch:
+  branch-policy-enforcement:
     runs-on: ubuntu-latest
     steps:
       - name: Check if PR is to main
         if: github.base_ref == 'main' && github.head_ref != 'alpha'
         run: |
-          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
+          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'alpha' first."
           exit 1
 
       - name: Check if PR is to alpha
         if: github.base_ref == 'alpha' && github.head_ref != 'develop'
         run: |
-          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
+          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'develop' first."
           exit 1
 
       - name: Check if PR is to develop
         if: github.base_ref == 'develop' 
         run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^feature/.+$ ]]; then 
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|stack)/.+$ ]]; then 
             echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
             exit 1
           fi
+
+  pull-request-enforcement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate title format
+        run: |
+          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\[(add|update|remove)\]:\[(stack|feature|hotfix)/[^]]+\](\[[a-zA-Z0-9-]+\])?::\ .+$ ]]; then
+            echo "ERROR: Invalid pull request title format. It should be '[add|update|remove]:[stack/feature/hotfix name][optional: taskid]:: [one line description]'."
+            exit 1
+          fi
+
+
