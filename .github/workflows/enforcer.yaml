@@ -1,5 +1,3 @@
-# .github/workflows/enforcer.yaml
-# Enforces branching standards and validates pull requests/pushes to ensure they meet specific criteria.
 name: 'enforcer'
 
 on:
@@ -13,16 +11,16 @@ jobs:
       - name: Check Branch Flow
         run: |
           if [[ "${{ github.base_ref }}" == "main" ]] && [[ "${{ github.head_ref }}" != "beta" ]]; then
-            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'beta' first."
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'beta' first."
             exit 1
           elif [[ "${{ github.base_ref }}" == "beta" ]] && [[ "${{ github.head_ref }}" != "alpha" ]]; then
-            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'alpha' first."
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'alpha' first."
             exit 1
           elif [[ "${{ github.base_ref }}" == "alpha" ]] && [[ "${{ github.head_ref }}" != "staging" ]]; then
-            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'staging' first."
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'staging' first."
             exit 1
-          elif [[ "${{ github.base_ref }}" == "staging" ]] && ( [[ "${{ github.head_ref }}" == "feature"* ]] || [[ "${{ github.head_ref }}" == "stack"* ]] || [[ "${{ github.head_ref }}" == "hotfix"* ]] ); then
-            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
+          elif [[ "${{ github.base_ref }}" == "staging" ]] && ! ( [[ "${{ github.head_ref }}" == "feature"* ]] || [[ "${{ github.head_ref }}" == "stack"* ]] || [[ "${{ github.head_ref }}" == "hotfix"* ]] ); then
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Branches merged into staging must start with 'feature/', 'stack/', or 'hotfix/'."
             exit 1
           fi
 
@@ -31,7 +29,7 @@ jobs:
     steps:
       - name: Validate title format
         run: |
-          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\(add\|remove\|update\):\(stack\|feature\|hotfix\)/\([^:]+\):\(#[0-9]+,\)?::\ .+$ ]]; then
-            echo "ERROR: Invalid pull request title format. It should be '(add|remove|update):(stack/feature/hotfix)/(name of the stack or feature):(#ISSUE_ID, optional):: [one line description]'."
+          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\(add\|remove\|update\):\(stack\|feature\|hotfix\)/\(.*\):\(#[0-9]+,\)?::\ .+$ ]]; then
+            echo "::error::ERROR: Invalid pull request title format. It should be '(add|remove|update):(stack/feature/hotfix)/(name of the stack or feature):(#ISSUE_ID, optional):: [one line description]'."
             exit 1
           fi
