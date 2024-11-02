@@ -3,14 +3,15 @@ version: '3.9'
 
 services:
   actions-runner:
+    image: github-actions-runner:2.320.0-02.11.2024
     build:
       context: .
       args:
         RUNNER_VERSION: "2.320.0"
-    user: ${PUID}:${PGID}
     environment:
       REPO: "${ACTIONS_REPO}"
       TOKEN: "${ACTIONS_TOKEN}"
+    command: sh -c "./config.sh --url ${ACTIONS_REPO} --token ${ACTIONS_TOKEN} && ./run.sh"
     network_mode: bridge
     restart: unless-stopped
     deploy:
