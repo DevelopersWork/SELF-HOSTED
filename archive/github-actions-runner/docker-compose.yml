@@ -1,0 +1,27 @@
+# stacks/github-actions-runner/docker-compose.yml
+version: '3.9'
+
+services:
+  actions-runner:
+    image: github-actions-runner:2.320.0-02.11.2024
+    build:
+      context: .
+      args:
+        RUNNER_VERSION: "2.320.0"
+    environment:
+      REPO: "${ACTIONS_REPO}"
+      TOKEN: "${ACTIONS_TOKEN}"
+    command: sh -c "./config.sh --url ${ACTIONS_REPO} --token ${ACTIONS_TOKEN} && ./run.sh"
+    network_mode: bridge
+    restart: unless-stopped
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: unless-stopped
+      resources:
+        limits:
+          cpus: '0.35'
+          memory: '300M'
+        reservations:
+          memory: '128M'

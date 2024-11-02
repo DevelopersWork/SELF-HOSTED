@@ -1,32 +1,26 @@
-# .github/workflows/enforcer.yaml
-# Enforces branching standards and validates pull requests/pushes to ensure they meet specific criteria.
 name: 'enforcer'
 
 on:
   pull_request:
-    branches: [main, develop, alpha]
+    branches: [main, beta, alpha, staging]
 
 jobs:
   branch-policy-enforcement:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if PR is to main
-        if: github.base_ref == 'main' && github.head_ref != 'alpha'
+      - name: Check Branch Flow
         run: |
-          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'alpha' first."
-          exit 1
-
-      - name: Check if PR is to alpha
-        if: github.base_ref == 'alpha' && github.head_ref != 'develop'
-        run: |
-          echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'develop' first."
-          exit 1
-
-      - name: Check if PR is to develop
-        if: github.base_ref == 'develop' 
-        run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|stack)/.+$ ]]; then 
-            echo "ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}."
+          if [[ "${{ github.base_ref }}" == "main" ]] && [[ "${{ github.head_ref }}" != "beta" ]]; then
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'beta' first."
+            exit 1
+          elif [[ "${{ github.base_ref }}" == "beta" ]] && [[ "${{ github.head_ref }}" != "alpha" ]]; then
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'alpha' first."
+            exit 1
+          elif [[ "${{ github.base_ref }}" == "alpha" ]] && [[ "${{ github.head_ref }}" != "staging" ]]; then
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Please merge to 'staging' first."
+            exit 1
+          elif [[ "${{ github.base_ref }}" == "staging" ]] && ! ( [[ "${{ github.head_ref }}" == "feature"* ]] || [[ "${{ github.head_ref }}" == "stack"* ]] || [[ "${{ github.head_ref }}" == "hotfix"* ]] ); then
+            echo "::error::ERROR: You cannot merge to ${{ github.base_ref }} from ${{ github.head_ref }}. Branches merged into staging must start with 'feature/', 'stack/', or 'hotfix/'."
             exit 1
           fi
 
@@ -35,9 +29,12 @@ jobs:
     steps:
       - name: Validate title format
         run: |
-          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\[(add|update|remove)\]:\[(stack|feature|hotfix)/[^]]+\](\[[a-zA-Z0-9-]+\])?::\ .+$ ]]; then
-            echo "ERROR: Invalid pull request title format. It should be '[add|update|remove]:[stack/feature/hotfix name][optional: taskid]:: [one line description]'."
-            exit 1
+          if [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):.*$ ]]; then
+            echo "::error::Error: Must start with add, remove, or update."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/.*$ ]]; then
+            echo "::error::Error: Must include stack, feature, or hotfix after action."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/([^:]+):.*$ ]]; then
+            echo "::error::Error: Must include stack/feature name."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/([^:]+):(#[0-9]+,)?::\s*\.+$ ]]; then
+            echo "::error::Error: Must include issue number and description after stack/feature name."
           fi
-
-
