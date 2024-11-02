@@ -29,7 +29,12 @@ jobs:
     steps:
       - name: Validate title format
         run: |
-          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\(add\|remove\|update\):\(stack\|feature\|hotfix\)/\(.*\):\(#[0-9]+,\)?::\s*\.+$ ]]; then
-            echo "::error::ERROR: Invalid pull request title format. It should be '(add|remove|update):(stack/feature/hotfix)/(name of the stack or feature):(#ISSUE_ID, optional):: [one line description]'."
-            exit 1
+          if [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):.*$ ]]; then
+            echo "::error::Error: Must start with add, remove, or update."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/.*$ ]]; then
+            echo "::error::Error: Must include stack, feature, or hotfix after action."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/([^:]+):.*$ ]]; then
+            echo "::error::Error: Must include stack/feature name."
+          elif [[ ! "add:stack/github-actions-runner:#14:: archived the container" =~ ^(add|remove|update):(stack|feature|hotfix)\/([^:]+):(#[0-9]+,)?::\s*\.+$ ]]; then
+            echo "::error::Error: Must include issue number and description after stack/feature name."
           fi
