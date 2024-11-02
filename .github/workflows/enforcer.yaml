@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: Validate title format
         run: |
-          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\(add\|remove\|update\):\(stack\|feature\|hotfix\)/\(.*\):\(#[0-9]+,\)?::\ .+$ ]]; then
+          if [[ ! "${{ github.event.pull_request.title }}" =~ ^\(add\|remove\|update\):\(stack\|feature\|hotfix\)/\(.*\):\(#[0-9]+,\)?::\s*\.+$ ]]; then
             echo "::error::ERROR: Invalid pull request title format. It should be '(add|remove|update):(stack/feature/hotfix)/(name of the stack or feature):(#ISSUE_ID, optional):: [one line description]'."
             exit 1
           fi
