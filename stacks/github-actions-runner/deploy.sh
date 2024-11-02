@@ -24,6 +24,15 @@ wget -q -O "$DOCKERFILE_OUTPUT_PATH" "$DOCKERFILE_URL" || {
 set_ownership "$DOCKERFILE_OUTPUT_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 set_permissions "$DOCKERFILE_OUTPUT_PATH" "644"
 
+ENTRYPOINT_URL="https://raw.githubusercontent.com/actions-runner-controller/runner-images/refs/heads/main/entrypoint.sh"
+ENTRYPOINT_OUTPUT_PATH="$STACK_PATH/entrypoint.sh"
+wget -q -O "$ENTRYPOINT_OUTPUT_PATH" "$ENTRYPOINT_URL" || {
+    echo "Failed to download: $ENTRYPOINT_URL" >&2
+    exit 1
+}
+set_ownership "$ENTRYPOINT_OUTPUT_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+set_permissions "$ENTRYPOINT_OUTPUT_PATH" "644"
+
 # .env file
 ENV_FILE="$STACK_PATH/.env"
 create_file_if_not_exists "$ENV_FILE" "$DOCKER_USER" "$DOCKER_GROUP"
