@@ -19,7 +19,7 @@ wget -q -O "$DOCKERFILE_OUTPUT_PATH" "$DOCKERFILE_URL" || {
     echo "Failed to download: $DOCKERFILE_URL" >&2
     exit 1
 }
-echo "$DOCKERFILE_SHA $DOCKERFILE_OUTPUT_PATH" | shasum -a 256 -c
+echo "$DOCKERFILE_SHA  $DOCKERFILE_OUTPUT_PATH" | shasum -a 256 -c
 set_ownership "$DOCKERFILE_OUTPUT_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 set_permissions "$DOCKERFILE_OUTPUT_PATH" "644"
 

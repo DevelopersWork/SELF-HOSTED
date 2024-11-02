@@ -3,10 +3,12 @@ version: '3.9'
 
 services:
   actions-runner:
-    build: .
+    build:
+      context: .
+      args:
+        RUNNER_VERSION: "2.320.0"
     user: ${PUID}:${PGID}
     environment:
-      RUNNER_VERSION: "2.320.0"
       REPO: "${ACTIONS_REPO}"
       TOKEN: "${ACTIONS_TOKEN}"
     network_mode: bridge
