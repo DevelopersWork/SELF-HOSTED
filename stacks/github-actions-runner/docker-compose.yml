@@ -6,7 +6,7 @@ services:
     build: .
     user: ${PUID}:${PGID}
     environment:
-      RUNNER_VERSION: "v2.320.0"
+      RUNNER_VERSION: "2.320.0"
       REPO: "${ACTIONS_REPO}"
       TOKEN: "${ACTIONS_TOKEN}"
     network_mode: bridge
