@@ -13,7 +13,7 @@ create_dir_if_not_exists "$STACK_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # Define and Create the redis volume directory
 REDIS_VOLUME_PATH="$DOCKER_VOLUME_PATH/databases/redis"
-create_dir_if_not_exists "$VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
+create_dir_if_not_exists "$REDIS_VOLUME_PATH" "$DOCKER_USER" "$DOCKER_GROUP"
 
 # .env file
 ENV_FILE="$STACK_PATH/.env"
