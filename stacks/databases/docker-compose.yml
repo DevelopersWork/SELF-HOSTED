@@ -1,0 +1,65 @@
+# stacks/databases/docker-compose.yml
+version: '3.9'
+
+services:
+  postgres:
+    image: docker.io/library/postgres:17.0-alpine
+    user: ${PUID}:${PGID}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - type: volume
+        source: postgres
+        target: "/var/lib/postgresql/data"
+      - type: tmpfs
+        target: "/dev/shm"
+        tmpfs:
+          size: 134217728 # 128Mb
+    networks:
+      - databases
+    restart: always
+
+  mariadb:
+    image: docker.io/library/mariadb:11.6.1-rc
+    user: ${PUID}:${PGID}
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - type: volume
+        source: mariadb
+        target: "/var/lib/mysql"
+    networks:
+      - databases
+    restart: always
+
+  redis:
+    image: docker.io/library/redis:8.0-M02-alpine
+    user: ${PUID}:${PGID}
+    volumes:
+      - type: bind
+        source: "$REDIS_VOLUME_PATH"
+        target: "/usr/local/etc/redis/"
+    networks:
+      - databases
+    restart: always
+
+networks:
+  databases:
+    name: "databases"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.36.0/24
+    external: false
+
+volumes:
+  postgres:
+    name: "postgres"
+    driver: local
+  mariadb:
+    name: "mariadb"
+    driver: local
