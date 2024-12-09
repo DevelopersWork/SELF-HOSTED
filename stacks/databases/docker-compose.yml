@@ -37,7 +37,7 @@ services:
       start_period: 80s
 
   mariadb:
-    image: docker.io/library/mariadb:11.6.1-rc
+    image: docker.io/library/mariadb:11.7.1-rc
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MARIADB_USER=${DB_USER}
@@ -61,7 +61,7 @@ services:
         reservations:
           memory: '128M'
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: [ "CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized" ]
       interval: 20s
       timeout: 60s
       retries: 10
