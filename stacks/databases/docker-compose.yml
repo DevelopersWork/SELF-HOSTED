@@ -35,16 +35,6 @@ services:
       - databases
     restart: always
 
-  mongo:
-    image: docker.io/library/mongo:8.0.4-rc0
-    user: ${PUID}:${PGID}
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
-    networks:
-      - databases
-    restart: always
-
   redis:
     image: docker.io/library/redis:8.0-M02-alpine
     user: ${PUID}:${PGID}
