@@ -35,6 +35,16 @@ services:
       - databases
     restart: always
 
+  mongo:
+    image: docker.io/library/mongo:8.0.4-rc0
+    user: ${PUID}:${PGID}
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    networks:
+      - databases
+    restart: always
+
   redis:
     image: docker.io/library/redis:8.0-M02-alpine
     user: ${PUID}:${PGID}
@@ -42,6 +52,9 @@ services:
       - type: bind
         source: "$REDIS_VOLUME_PATH"
         target: "/usr/local/etc/redis/"
+      - type: volume
+        source: redis
+        target: "/data"
     networks:
       - databases
     restart: always
@@ -62,4 +75,7 @@ volumes:
     driver: local
   mariadb:
     name: "mariadb"
+    driver: local
+  redis:
+    name: "redis"
     driver: local
