@@ -3,7 +3,7 @@ version: '3.9'
 
 services:
   cloudflared:
-    image: docker.io/cloudflare/cloudflared:2024.10.1
+    image: docker.io/cloudflare/cloudflared:2024.11.1
     user: ${PUID}:${PGID}
     environment:
       TUNNEL_TOKEN: "${CLOUDFLARED_TUNNEL_TOKEN}"
