@@ -19,7 +19,7 @@ fi
 SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 
 # Array of scripts to run
-scripts=("04-setup-stacks.sh" "05-setup-container-management.sh")
+scripts=("04-setup-stacks.sh")
 
 # Create alias for running commands as the docker user
 AS_DOCKER_USER="sudo -u $DOCKER_USER /bin/bash"
@@ -31,8 +31,8 @@ TEMP_DIR=$($AS_DOCKER_USER -c "mktemp -d") || { echo "Failed to create temporary
 sudo cp -r "." "$TEMP_DIR/"
 sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
-# Run scripts 04 and 05 as the 'docker' user
-for script in "${scripts[@]:0:2}"; do  
+# Run scripts 04 as the 'docker' user
+for script in "${scripts[@]:0:1}"; do  
   $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
   echo "Script $script completed successfully."
 done
