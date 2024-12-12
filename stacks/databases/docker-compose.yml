@@ -4,7 +4,6 @@ version: '3.9'
 services:
   postgres:
     image: docker.io/library/postgres:17.0-alpine
-    user: ${PUID}:${PGID}
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -19,10 +18,26 @@ services:
     networks:
       - databases
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: always
+      resources:
+        limits:
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          memory: '32M'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "db_prod" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
 
   mariadb:
-    image: docker.io/library/mariadb:11.6.1-rc
-    user: ${PUID}:${PGID}
+    image: docker.io/library/mariadb:11.7.1-rc
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MARIADB_USER=${DB_USER}
@@ -34,17 +49,53 @@ services:
     networks:
       - databases
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: always
+      resources:
+        limits:
+          cpus: '1'
+          memory: '1024M'
+        reservations:
+          memory: '128M'
+    healthcheck:
+      test: [ "CMD", "/usr/local/bin/healthcheck.sh", "--innodb_initialized" ]
+      interval: 20s
+      timeout: 60s
+      retries: 10
+      start_period: 60s
 
   redis:
     image: docker.io/library/redis:8.0-M02-alpine
-    user: ${PUID}:${PGID}
     volumes:
       - type: bind
         source: "$REDIS_VOLUME_PATH"
         target: "/usr/local/etc/redis/"
+      - type: volume
+        source: redis
+        target: "/data"
     networks:
       - databases
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: always
+      resources:
+        limits:
+          cpus: '1'
+          memory: '2048M'
+        reservations:
+          memory: '32M'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 20s
+      timeout: 60s
+      retries: 10
+      start_period: 60s
 
 networks:
   databases:
@@ -62,4 +113,7 @@ volumes:
     driver: local
   mariadb:
     name: "mariadb"
+    driver: local
+  redis:
+    name: "redis"
     driver: local

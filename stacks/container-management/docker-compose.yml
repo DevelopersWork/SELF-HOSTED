@@ -3,7 +3,7 @@ version: '3.9'
 
 services:
   portainer:
-    image: docker.io/portainer/portainer-ce:2.21.4
+    image: docker.io/portainer/portainer-ce:2.24.1-alpine
     ports:
       - 9000:9000/tcp
     environment:
