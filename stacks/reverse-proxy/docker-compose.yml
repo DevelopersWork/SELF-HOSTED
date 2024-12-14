@@ -1,0 +1,50 @@
+# stacks/reverse-proxy/docker-compose.yml
+version: '3.9'
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:v3
+    container_name: nginx-proxy-manager
+    hostname: nginx-proxy-manager
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - DISABLE_IPV6=true
+      - DB_MYSQL_HOST=${DB_HOST:-mariadb}
+      - DB_MYSQL_PORT=${DB_PORT:-3306}
+      - DB_MYSQL_USER=${DB_USER}
+      - DB_MYSQL_PASSWORD=${DB_PASSWORD}
+      - DB_MYSQL_NAME=${DB_NAME}
+    volumes:
+      - type: volume
+        source: nginx-proxy-manager
+        target: "/data"
+      - type: volume
+        source: letsencrypt
+        target: "/etc/letsencrypt"
+    networks:
+      - reverse-proxy
+      - databases
+    restart: unless-stopped
+
+networks:
+  reverse-proxy:
+    name: "reverse-proxy"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.80.0/24
+    external: false
+  databases:
+    external: true
+
+volumes:
+  nginx-proxy-manager:
+    driver: local
+  letsencrypt:
+    driver: local

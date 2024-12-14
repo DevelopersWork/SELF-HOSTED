@@ -1,4 +1,4 @@
-# Nginx Proxy Manager Stack
+# Reverse Proxy Stack
 
 This stack deploys Nginx Proxy Manager (NPM), a powerful and user-friendly web interface for managing reverse proxies, SSL certificates, and more. It simplifies the process of setting up secure access to your web applications within your homelab.
 
