@@ -1,4 +1,9 @@
 {
     "editor.fontSize": 16,
-    "files.autoSave": "onWindowChange"
+    "files.autoSave": "onWindowChange",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
