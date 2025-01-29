@@ -1,2 +1,41 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Ensure shell scripts use LF line endings
+*.sh text eol=crlf
+
+# Ensure JSON files use LF line endings
+*.json text eol=lf
+
+# Ensure YAML files use LF line endings
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Ensure Python files use LF line endings
+*.py text eol=lf
+
+# Treat Dockerfiles as text
+Dockerfile text
+
+# Treat Markdown files as text
+*.md text
+
+# Treat HTML files as text
+*.html text
+
+# Treat CSS files as text
+*.css text
+
+# Treat JavaScript files as text
+*.js text
+
+# Treat TypeScript files as text
+*.ts text
+
+# Treat configuration files as text
+*.conf text
+*.ini text
+*.cfg text
+
+# Treat log files as text
+*.log text

@@ -1,3 +1,35 @@
-**/.env/**
-**/node_modules/**
+# Python related
 **/__pycache__/**
+**/*.pyc
+**/*.pyo
+**/.mypy_cache/
+**/.tox/
+**/.pytest_cache/
+**/.ipynb_checkpoints/
+**/.coverage
+**/coverage.xml
+**/htmlcov/
+**/dist/
+**/build/
+**/*.egg-info/
+
+# Environment and virtual environments
+**/.env
+**/venv/**
+
+# Node.js related
+**/node_modules/**
+
+# IDEs and editors
+**/.vscode/**
+**/.idea/
+**/*.swp
+
+# OS generated files
+**/.DS_Store
+
+# Logs and temporary files
+**/*.log
+
+# Miscellaneous
+**/.pytest_cache/**
