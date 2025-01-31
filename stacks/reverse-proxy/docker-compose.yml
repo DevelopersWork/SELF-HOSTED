@@ -11,24 +11,53 @@ services:
       - 81:81/tcp
     environment:
       - DISABLE_IPV6=true
-      - DB_MYSQL_HOST=${DB_HOST:-mariadb}
-      - DB_MYSQL_PORT=${DB_PORT:-3306}
-      - DB_MYSQL_USER=${DB_USER}
-      - DB_MYSQL_PASSWORD=${DB_PASSWORD}
-      - DB_MYSQL_NAME=${DB_NAME}
+      - X_FRAME_OPTIONS="sameorigin"
+      - DB_POSTGRES_HOST=npm-postgres
+      - DB_POSTGRES_PORT=5432
+      - DB_POSTGRES_USER=${DB_USER}
+      - DB_POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DB_POSTGRES_NAME=${DB_NAME}
     volumes:
       - type: volume
         source: nginx-proxy-manager
         target: "/data"
       - type: volume
-        source: letsencrypt
+        source: npm-letsencrypt
         target: "/etc/letsencrypt"
     networks:
       - reverse-proxy
-      - databases
     restart: unless-stopped
+    depends_on:
+      - npm-postgres
+  npm-postgres:
+    image: docker.io/library/postgres:17.0-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - type: volume
+        source: npm-postgres
+        target: "/var/lib/postgresql/data"
+      - type: tmpfs
+        target: "/dev/shm"
+        tmpfs:
+          size: 134217728 # 128Mb
+    networks:
+      - reverse-proxy
+    restart: always
+    deploy:
+      restart_policy:
+        condition: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "db_prod" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
   traefik:
     image: docker.io/library/traefik:v3.2.3
+    hostname: traefik
     command:
       - --providers.docker
       - --providers.file.directory=/etc/traefik
@@ -58,13 +87,17 @@ networks:
       config:
         - subnet: 172.22.80.0/24
     external: false
-  databases:
-    external: true
 
 volumes:
   traefik:
+    name: "rp-traefik"
     driver: local
   nginx-proxy-manager:
+    name: "rp-nginx-proxy-manager"
     driver: local
-  letsencrypt:
+  npm-letsencrypt:
+    name: "rp-npm-letsencrypt"
+    driver: local
+  npm-postgres:
+    name: "rp-npm-postgres"
     driver: local

@@ -9,47 +9,38 @@ This stack deploys Nginx Proxy Manager (NPM), a powerful and user-friendly web i
 
 ## Services
 
-- **nginx-proxy-manager:** The core reverse proxy service that manages your web applications.
-- **mariadb-aria-npm:**  MariaDB database for storing Nginx Proxy Manager configuration.
+- **nginx-proxy-manager:** The primary reverse proxy service that manages and routes your web applications.
+- **traefik:** A dynamic reverse proxy that simplifies the deployment of microservices.
 
 ## Environment Variables
 
-**Nginx Proxy Manager:**
-
 - **`PUID`**: User ID (UID) for running the container.
 - **`PGID`**: Group ID (GID) for running the container.
-- **`NPM_HTTP_PORT`:** Port for HTTP traffic (default: `80`).
-- **`NPM_HTTPS_PORT`:** Port for HTTPS traffic (default: `443`).
-- **`NPM_HTTP_WEBPORT`:** Port for the Nginx Proxy Manager web interface (default: `8081`).
-- **`NPM_VOLUME_PATH`:** Path to the Nginx Proxy Manager data volume (defaults to `/home/docker/containers/nginx-proxy-manager`).
-- **`NPM_RESOURCES_CPUS`:** CPU cores allocated to Nginx Proxy Manager (default: `0.5`).
-- **`NPM_RESOURCES_MEMORY`:** Memory allocated to Nginx Proxy Manager (default: `512M`).
-
-**MariaDB:**
-
-- **`MYSQL_ROOT_PASSWORD`:** Root password for the MariaDB database (**required**, set a strong password).
-- **`MYSQL_PASSWORD`:** Password for the Nginx Proxy Manager database user (**required**, set a strong password).
-- **`MARIADB_RESOURCES_CPUS`:** CPU cores allocated to MariaDB (default: `0.5`).
-- **`MARIADB_RESOURCES_MEMORY`:** Memory allocated to MariaDB (default: `512M`).
+- **`DB_NAME`**: The name of the database.
+- **`DB_USER`**: The username for the database.
+- **`DB_PASSWORD`**: The password for the database.
 
 ## Usage
 
 1.  **Preparation:**
     -   Open the `deploy.sh` script in this directory.
-    -   **Replace the placeholders** `MYSQL_ROOT_PASSWORD` and `MYSQL_PASSWORD` in the `deploy.sh` script with your actual, strong passwords.
+    -   **Replace the placeholders** `DB_PASSWORD` in the `deploy.sh` script with your actual, strong passwords.
     -   Run the `update.sh` script from the root of the repository to execute the `deploy.sh` script.
 
 2.  **Accessing Nginx Proxy Manager:**
-    -   Open your browser and navigate to `http://<your-host-ip>:8081`.
+    -   Open your browser and navigate to `http://<your-host-ip>:81`.
     -   You'll be prompted to set up an initial user account.
+    
+3.  **Accessing Traefik:**
+    -   Open your browser and navigate to `http://<your-host-ip>:8081`.
 
-3.  **Using Nginx Proxy Manager:**
+4.  **Using Nginx Proxy Manager:**
     -   Once logged in, you can use the web interface to add your domains, configure SSL certificates (manually or with Let's Encrypt), set up reverse proxies, and manage other aspects of your web services.
     
 ## Additional Notes
 
 - **Custom Configuration:** Nginx Proxy Manager offers extensive options for customization. Refer to the official documentation for advanced configuration.
-- **Security:** Remember to set strong passwords for your MariaDB database.
+- **Security:** Remember to set strong passwords for your Postgresql database.
 - **Due to current limitations, the Nginx Proxy Manager container runs as root within the Docker container.**
 
 ## Authors
