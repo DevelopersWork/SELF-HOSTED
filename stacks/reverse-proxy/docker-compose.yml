@@ -1,0 +1,103 @@
+# stacks/reverse-proxy/docker-compose.yml
+version: '3.9'
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:v3
+    hostname: nginx-proxy-manager
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+      - 81:81/tcp
+    environment:
+      - DISABLE_IPV6=true
+      - X_FRAME_OPTIONS="sameorigin"
+      - DB_POSTGRES_HOST=npm-postgres
+      - DB_POSTGRES_PORT=5432
+      - DB_POSTGRES_USER=${DB_USER}
+      - DB_POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DB_POSTGRES_NAME=${DB_NAME}
+    volumes:
+      - type: volume
+        source: nginx-proxy-manager
+        target: "/data"
+      - type: volume
+        source: npm-letsencrypt
+        target: "/etc/letsencrypt"
+    networks:
+      - reverse-proxy
+    restart: unless-stopped
+    depends_on:
+      - npm-postgres
+  npm-postgres:
+    image: docker.io/library/postgres:17.0-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - type: volume
+        source: npm-postgres
+        target: "/var/lib/postgresql/data"
+      - type: tmpfs
+        target: "/dev/shm"
+        tmpfs:
+          size: 134217728 # 128Mb
+    networks:
+      - reverse-proxy
+    restart: always
+    deploy:
+      restart_policy:
+        condition: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "db_prod" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  traefik:
+    image: docker.io/library/traefik:v3.2.3
+    hostname: traefik
+    command:
+      - --providers.docker
+      - --providers.file.directory=/etc/traefik
+      - --providers.file.watch=true
+      - --api.insecure=true
+    ports:
+      - 8080:80/tcp
+      - 8443:443/tcp
+      - 8081:8080/tcp
+    volumes:
+      - type: volume
+        source: traefik
+        target: "/etc/traefik"
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+    networks:
+      - reverse-proxy
+    restart: unless-stopped
+
+networks:
+  reverse-proxy:
+    name: "reverse-proxy"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.80.0/24
+    external: false
+
+volumes:
+  traefik:
+    name: "rp-traefik"
+    driver: local
+  nginx-proxy-manager:
+    name: "rp-nginx-proxy-manager"
+    driver: local
+  npm-letsencrypt:
+    name: "rp-npm-letsencrypt"
+    driver: local
+  npm-postgres:
+    name: "rp-npm-postgres"
+    driver: local

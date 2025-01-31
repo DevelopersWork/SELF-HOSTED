@@ -4,6 +4,7 @@ version: '3.9'
 services:
   postgres:
     image: docker.io/library/postgres:17.0-alpine
+    hostname: postgres
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -37,7 +38,8 @@ services:
       start_period: 80s
 
   mariadb:
-    image: docker.io/library/mariadb:11.7.1-rc
+    image: docker.io/library/mariadb:11.6.2
+    hostname: mariadb
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MARIADB_USER=${DB_USER}
@@ -69,6 +71,7 @@ services:
 
   redis:
     image: docker.io/library/redis:8.0-M02-alpine
+    hostname: redis
     volumes:
       - type: bind
         source: "$REDIS_VOLUME_PATH"
@@ -109,11 +112,8 @@ networks:
 
 volumes:
   postgres:
-    name: "postgres"
     driver: local
   mariadb:
-    name: "mariadb"
     driver: local
   redis:
-    name: "redis"
     driver: local

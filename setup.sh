@@ -22,14 +22,14 @@ SCRIPTS_PATH="$(dirname "$(realpath "$0")")/$SCRIPTS_DIR"
 scripts=("01-dependencies.sh" "02-user-setup.sh" "03-storage-setup.sh" "04-setup-stacks.sh" "05-setup-container-management.sh")
 
 # Check if scripts exist
-for script in "${scripts[@]}"; do
+for script in "${scripts[@]}"; do 
   [ -f "$SCRIPTS_PATH/$script" ] || { echo "Error: Script $script not found in $SCRIPTS_PATH" >&2; exit 1; }
 done
 
 # Run scripts 01, 02, and 03 as root
 for script in "${scripts[@]:0:3}"; do 
   sudo /bin/bash "$SCRIPTS_PATH/$script" "$SCRIPTS_PATH" "$ENV_FILE" || { echo "Error running $script" >&2; exit 1; }
-  echo "Script $script completed successfully."
+  echo "Script $script completed successfully." 
 done
 
 # Get the docker user's UID and GID after user creation
@@ -49,9 +49,9 @@ sudo cp -r "." "$TEMP_DIR/"
 sudo chown -R "$DOCKER_USER":"$DOCKER_GROUP" "$TEMP_DIR"
 
 # Run scripts 04 and 05 as the 'docker' user
-for script in "${scripts[@]:3:2}"; do  
+for script in "${scripts[@]:3:2}"; do 
   $AS_DOCKER_USER "$TEMP_DIR/$SCRIPTS_DIR/$script" "$TEMP_DIR/$SCRIPTS_DIR" "$TEMP_DIR/$ENV_FILE" || { echo "Error running $script"; exit 1; }
-  echo "Script $script completed successfully."
+  echo "Script $script completed successfully." 
 done
 
 # Clean up - remove the temporary directory

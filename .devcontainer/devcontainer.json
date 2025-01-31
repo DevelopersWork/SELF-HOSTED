@@ -1,0 +1,42 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "SELF-HOSTED-DEV-CONTAINER",
+	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"moby": true,
+			"azureDnsAutoDetection": true,
+			"installDockerBuildx": true,
+			"installDockerComposeSwitch": true,
+			"version": "latest",
+			"dockerDashComposeVersion": "latest"
+		},
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "latest"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.autopep8"
+			],
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			}
+		}
+	},
+	"containerEnv": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	"postCreateCommand": "echo 'root ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers",
+	"postStartCommand": "pip install -r `pwd`/requirements.txt",
+	"postAttachCommand": "uname -a",
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"containerUser": "root",
+	"remoteUser": "vscode"
+}

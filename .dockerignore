@@ -1,10 +1,10 @@
 # Python related
 **/__pycache__/**
+**/.pytest_cache/**
 **/*.pyc
 **/*.pyo
 **/.mypy_cache/
 **/.tox/
-**/.pytest_cache/
 **/.ipynb_checkpoints/
 **/.coverage
 **/coverage.xml
@@ -30,6 +30,3 @@
 
 # Logs and temporary files
 **/*.log
-
-# Miscellaneous
-**/.pytest_cache/**
